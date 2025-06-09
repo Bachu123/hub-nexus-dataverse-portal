@@ -1,15 +1,16 @@
 
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ChevronLeft, Star, Users, GitBranch, Calendar, Database, FileText, Search, Eye } from "lucide-react";
+import { ChevronLeft, Star, Users, GitBranch, Database, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { datasets, DatasetFile } from "@/data/datasets";
 import HILStatusBar from "@/components/HILStatusBar";
 import FilePreviewDialog from "@/components/FilePreviewDialog";
+import ExpandableFileRow from "@/components/ExpandableFileRow";
 
 const DatasetDetail = () => {
   const { id } = useParams();
@@ -194,59 +195,12 @@ const DatasetDetail = () => {
                 </TableHeader>
                 <TableBody>
                   {filteredFiles.map((file) => (
-                    <TableRow key={file.id}>
-                      <TableCell>
-                        <input type="checkbox" className="rounded" />
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center">
-                          <button className="text-purple-600 hover:text-purple-700 mr-2">
-                            ▶
-                          </button>
-                          {file.id}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center">
-                          <FileText className="w-4 h-4 text-blue-600 mr-2" />
-                          <span className="text-blue-600 font-medium">{file.name}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-slate-600">{file.description}</TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">{file.format}</Badge>
-                      </TableCell>
-                      <TableCell className="text-slate-600">{file.volume}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm font-medium">{file.usabilityScore}/100</span>
-                          <div className="w-16 h-2 bg-slate-200 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500"
-                              style={{ width: `${file.usabilityScore}%` }}
-                            />
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handlePreviewFile(file)}
-                          >
-                            <Eye className="w-4 h-4 mr-1" />
-                            Preview
-                          </Button>
-                          {file.reportUrl && (
-                            <Button variant="outline" size="sm">
-                              <FileText className="w-4 h-4 mr-1" />
-                              Report
-                            </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
+                    <ExpandableFileRow
+                      key={file.id}
+                      file={file}
+                      hilTasks={dataset.hilTasks}
+                      onPreview={handlePreviewFile}
+                    />
                   ))}
                 </TableBody>
               </Table>

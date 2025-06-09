@@ -1,12 +1,10 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronLeft, Search, Database, FileText, Clock, CheckCircle, AlertCircle, Plus } from "lucide-react";
+import { ChevronLeft, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { datasets } from "@/data/datasets";
 
 const SelfServiceRequest = () => {
@@ -15,7 +13,6 @@ const SelfServiceRequest = () => {
   const [selectedUseCase, setSelectedUseCase] = useState("Computer Vision");
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [selectedFile, setSelectedFile] = useState("");
-  const [activeTab, setActiveTab] = useState("general");
 
   const dataset = datasets["hav-df"];
 
@@ -86,85 +83,6 @@ const SelfServiceRequest = () => {
     alert("Task created successfully! It will appear in the HIL dashboard.");
   };
 
-  const annotationTasks = [
-    {
-      id: "234",
-      taskName: "3_2_10_output-csvextract-file_24-Oct-2024_12-37-3.csv",
-      workspace: "Wks_Azure_01",
-      project: "UPS",
-      sentForReview: 14,
-      afterReview: 8,
-      reviewPending: 8,
-      date: "2022-04-22 10:34:23",
-      status: "In Progress",
-      output: "---"
-    },
-    {
-      id: "345", 
-      taskName: "3_2_10_output-csvextract-file_25-Oct-2024_12-37-3.csv",
-      workspace: "Wks_Azure_01",
-      project: "UPS",
-      sentForReview: 11,
-      afterReview: 11,
-      reviewPending: 0,
-      date: "2022-04-22 10:34:23",
-      status: "Completed",
-      output: "View"
-    }
-  ];
-
-  const dataFields = [
-    {
-      fieldName: "Customer ID",
-      dataType: "String", 
-      description: "Unique identifier for each customer",
-      exampleValues: "C12345, C67890",
-      constraints: "Non-null, Unique"
-    },
-    {
-      fieldName: "Gender",
-      dataType: "Categorical",
-      description: "Gender of the customer", 
-      exampleValues: "Male, Female",
-      constraints: "Non-null, [Male, Female]"
-    },
-    {
-      fieldName: "Age",
-      dataType: "Integer",
-      description: "Age of the customer",
-      exampleValues: "25, 45", 
-      constraints: ">= 18"
-    },
-    {
-      fieldName: "Monthly Charges",
-      dataType: "Float",
-      description: "Monthly subscription charges",
-      exampleValues: "29.99, 99.99",
-      constraints: "Non-null, >= 0"
-    },
-    {
-      fieldName: "Contract Type", 
-      dataType: "Categorical",
-      description: "Type of subscription contract",
-      exampleValues: "Month-to-Month, Annual",
-      constraints: "Non-null, Fixed values"
-    },
-    {
-      fieldName: "Churn",
-      dataType: "Boolean",
-      description: "Indicates if the customer has churned",
-      exampleValues: "True, False",
-      constraints: "Non-null"
-    },
-    {
-      fieldName: "Tenure",
-      dataType: "Integer", 
-      description: "Number of months the customer has been with the company",
-      exampleValues: "1, 24",
-      constraints: "Non-null, >= 0"
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
@@ -184,7 +102,7 @@ const SelfServiceRequest = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Data Creation Form */}
+        {/* HIL Task Creation Form */}
         <div className="bg-white rounded-xl p-6 mb-8 shadow-sm border border-slate-200">
           <h2 className="text-xl font-semibold text-slate-900 mb-6">Create HIL Task</h2>
           
@@ -287,226 +205,23 @@ const SelfServiceRequest = () => {
           </div>
         </div>
 
-        {/* Dataset Files Section */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-          <div className="p-6 border-b border-slate-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <input type="checkbox" className="rounded" />
-                <button className="text-purple-600 hover:text-purple-700">▼</button>
-                <span className="font-medium">234</span>
-                <FileText className="w-4 h-4 text-blue-600" />
-                <span className="text-blue-600 font-medium">payment_details</span>
-              </div>
-              <div className="flex items-center space-x-4 text-sm text-slate-600">
-                <span>Test</span>
-                <Badge variant="secondary">SQL</Badge>
-                <span>1000</span>
-                <div className="flex items-center">
-                  <FileText className="w-4 h-4 text-purple-600 mr-1" />
-                  <span className="text-purple-600">Overall Report</span>
-                </div>
-              </div>
-            </div>
+        {/* Information Section */}
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+          <h3 className="text-lg font-medium text-slate-900 mb-4">How it works</h3>
+          <div className="space-y-4 text-slate-600">
+            <p>1. <strong>Select a target file</strong> from the dataset that you want to create a HIL task for.</p>
+            <p>2. <strong>Choose your use case</strong> from the available options to match your annotation needs.</p>
+            <p>3. <strong>Pick a template</strong> that best fits your data annotation requirements.</p>
+            <p>4. <strong>Provide task details</strong> including name and description for clear task identification.</p>
+            <p>5. <strong>Submit the task</strong> and it will be added to the HIL pipeline for processing.</p>
           </div>
-
-          {/* Tabs for Dataset Details */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="px-6 py-4 border-b border-slate-200">
-              <div className="flex items-center justify-between mb-4">
-                <div className="text-sm text-slate-600">
-                  <span>Created Date: 02 Jan 2025 10:30 AM</span>
-                  <span className="ml-8">Last Updated Date: 02 Jan 2025 10:30 AM</span>
-                </div>
-                <Button variant="outline" className="text-purple-600 border-purple-600 hover:bg-purple-50">
-                  <FileText className="w-4 h-4 mr-2" />
-                  View General Report
-                </Button>
-              </div>
-              
-              <TabsList className="grid grid-cols-5 w-fit">
-                <TabsTrigger value="general">General</TabsTrigger>
-                <TabsTrigger value="data-processing">Data Processing</TabsTrigger>
-                <TabsTrigger value="human-in-loop">Human In Loop</TabsTrigger>
-                <TabsTrigger value="data-dictionary">Data Dictionary</TabsTrigger>
-                <TabsTrigger value="metadata">Metadata</TabsTrigger>
-              </TabsList>
-            </div>
-
-            <TabsContent value="general" className="p-6">
-              <div className="text-slate-600">
-                <p>General information and overview of the dataset will be displayed here.</p>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="data-processing" className="p-6">
-              <div className="text-slate-600">
-                <p>Data processing information and pipeline details will be shown here.</p>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="human-in-loop" className="p-6">
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium text-slate-900">HIL Tasks for this File</h3>
-                  <div className="relative max-w-md">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-                    <Input placeholder="Search" className="pl-10" />
-                  </div>
-                </div>
-
-                {/* Show HIL tasks related to this file */}
-                <div className="space-y-4">
-                  {dataset.hilTasks
-                    .filter(task => task.fileId === "234")
-                    .map((task) => (
-                      <div key={task.id} className="p-4 border border-slate-200 rounded-lg">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h4 className="font-medium text-slate-900">{task.taskName}</h4>
-                            <p className="text-sm text-slate-600">{task.taskType} • {task.assignedTo || "Unassigned"}</p>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            {task.status === "completed" ? (
-                              <CheckCircle className="w-5 h-5 text-green-500" />
-                            ) : task.status === "in-progress" ? (
-                              <Clock className="w-5 h-5 text-blue-500" />
-                            ) : (
-                              <AlertCircle className="w-5 h-5 text-orange-500" />
-                            )}
-                            <Badge className={
-                              task.status === "completed" ? "bg-green-100 text-green-800" :
-                              task.status === "in-progress" ? "bg-blue-100 text-blue-800" :
-                              "bg-orange-100 text-orange-800"
-                            }>
-                              {task.status}
-                            </Badge>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="bg-purple-600 hover:bg-purple-600">
-                        <TableHead className="text-white">ID</TableHead>
-                        <TableHead className="text-white">Task Name</TableHead>
-                        <TableHead className="text-white">Workspace</TableHead>
-                        <TableHead className="text-white">Project</TableHead>
-                        <TableHead className="text-white">Sent For Review</TableHead>
-                        <TableHead className="text-white">After Review</TableHead>
-                        <TableHead className="text-white">Review Pending</TableHead>
-                        <TableHead className="text-white">Date</TableHead>
-                        <TableHead className="text-white">Status</TableHead>
-                        <TableHead className="text-white">Output</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {annotationTasks.map((task) => (
-                        <TableRow key={task.id}>
-                          <TableCell className="font-medium">{task.id}</TableCell>
-                          <TableCell className="text-sm">{task.taskName}</TableCell>
-                          <TableCell>{task.workspace}</TableCell>
-                          <TableCell>{task.project}</TableCell>
-                          <TableCell>{task.sentForReview}</TableCell>
-                          <TableCell>{task.afterReview}</TableCell>
-                          <TableCell>{task.reviewPending}</TableCell>
-                          <TableCell className="text-sm">{task.date}</TableCell>
-                          <TableCell>
-                            <div className="flex items-center">
-                              {task.status === "In Progress" ? (
-                                <>
-                                  <Clock className="w-4 h-4 text-orange-500 mr-2" />
-                                  <span className="text-orange-700">{task.status}</span>
-                                </>
-                              ) : (
-                                <>
-                                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                                  <span className="text-green-700">{task.status}</span>
-                                </>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            {task.output === "View" ? (
-                              <Button variant="link" className="text-purple-600 p-0">
-                                {task.output}
-                              </Button>
-                            ) : (
-                              <span className="text-slate-400">{task.output}</span>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="data-dictionary" className="p-6">
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Field Name</TableHead>
-                      <TableHead>Data Type</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Example Values</TableHead>
-                      <TableHead>Constraints</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {dataFields.map((field, index) => (
-                      <TableRow key={index}>
-                        <TableCell className="font-medium">{field.fieldName}</TableCell>
-                        <TableCell>{field.dataType}</TableCell>
-                        <TableCell>{field.description}</TableCell>
-                        <TableCell className="text-sm">{field.exampleValues}</TableCell>
-                        <TableCell className="text-sm">{field.constraints}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="metadata" className="p-6">
-              <div className="text-slate-600">
-                <p>Metadata information about the dataset will be displayed here.</p>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-
-        {/* Additional Files */}
-        <div className="space-y-4">
-          {[
-            { id: "222", name: "f1100_xvid.avi", format: "AVI", volume: "200 MB" },
-            { id: "235", name: "customer_transactions", format: "CSV", volume: "5000 Records" }
-          ].map((file) => (
-            <div key={`${file.id}-${file.name}`} className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <button className="text-purple-600 hover:text-purple-700">▼</button>
-                  <span className="font-medium">{file.id}</span>
-                  <FileText className="w-4 h-4 text-blue-600" />
-                  <span className="text-blue-600 font-medium">{file.name}</span>
-                </div>
-                <div className="flex items-center space-x-4 text-sm text-slate-600">
-                  <span>Test</span>
-                  <Badge variant="secondary">{file.format}</Badge>
-                  <span>{file.volume}</span>
-                  <div className="flex items-center">
-                    <FileText className="w-4 h-4 text-purple-600 mr-1" />
-                    <span className="text-purple-600">Overall Report</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+          
+          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-blue-800 text-sm">
+              <strong>Note:</strong> Created HIL tasks will be visible in the dataset's file details under the "Human In Loop" tab. 
+              You can track their progress and manage annotations from there.
+            </p>
+          </div>
         </div>
       </main>
     </div>
