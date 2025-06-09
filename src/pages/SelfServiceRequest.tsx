@@ -1,20 +1,23 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronLeft, Search, Database, FileText, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { ChevronLeft, Search, Database, FileText, Clock, CheckCircle, AlertCircle, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { datasets } from "@/data/datasets";
 
 const SelfServiceRequest = () => {
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedUseCase, setSelectedUseCase] = useState("Computer Vision");
   const [selectedTemplate, setSelectedTemplate] = useState("");
+  const [selectedFile, setSelectedFile] = useState("");
   const [activeTab, setActiveTab] = useState("general");
+
+  const dataset = datasets["hav-df"];
 
   const useCases = [
     "Computer Vision",
@@ -59,6 +62,29 @@ const SelfServiceRequest = () => {
       image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5"
     }
   ];
+
+  const handleSubmitTask = () => {
+    if (!taskName || !selectedFile) {
+      alert("Please fill in task name and select a file");
+      return;
+    }
+    
+    // In a real app, this would create a new HIL task
+    console.log("Creating new HIL task:", {
+      taskName,
+      description,
+      fileId: selectedFile,
+      useCase: selectedUseCase,
+      template: selectedTemplate
+    });
+    
+    // Reset form
+    setTaskName("");
+    setDescription("");
+    setSelectedFile("");
+    
+    alert("Task created successfully! It will appear in the HIL dashboard.");
+  };
 
   const annotationTasks = [
     {
@@ -160,26 +186,42 @@ const SelfServiceRequest = () => {
       <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Data Creation Form */}
         <div className="bg-white rounded-xl p-6 mb-8 shadow-sm border border-slate-200">
-          <h2 className="text-xl font-semibold text-slate-900 mb-6">Data Creation</h2>
+          <h2 className="text-xl font-semibold text-slate-900 mb-6">Create HIL Task</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Task Name</label>
               <Input
-                placeholder="Enter Name"
+                placeholder="Enter Task Name"
                 value={taskName}
                 onChange={(e) => setTaskName(e.target.value)}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Description</label>
-              <Textarea
-                placeholder="Enter description..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="min-h-[40px]"
-              />
+              <label className="block text-sm font-medium text-slate-700 mb-2">Target File</label>
+              <select
+                className="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                value={selectedFile}
+                onChange={(e) => setSelectedFile(e.target.value)}
+              >
+                <option value="">Select a file...</option>
+                {dataset.files.map((file) => (
+                  <option key={file.id} value={file.id}>
+                    {file.name} ({file.format})
+                  </option>
+                ))}
+              </select>
             </div>
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-slate-700 mb-2">Description</label>
+            <Textarea
+              placeholder="Enter task description..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="min-h-[80px]"
+            />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -235,8 +277,12 @@ const SelfServiceRequest = () => {
           </div>
 
           <div className="flex justify-end mt-6">
-            <Button className="bg-purple-600 hover:bg-purple-700 text-white">
-              Submit Request
+            <Button 
+              className="bg-purple-600 hover:bg-purple-700 text-white"
+              onClick={handleSubmitTask}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Create HIL Task
             </Button>
           </div>
         </div>
@@ -302,11 +348,43 @@ const SelfServiceRequest = () => {
             <TabsContent value="human-in-loop" className="p-6">
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium text-slate-900">Data Annotation</h3>
+                  <h3 className="text-lg font-medium text-slate-900">HIL Tasks for this File</h3>
                   <div className="relative max-w-md">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
                     <Input placeholder="Search" className="pl-10" />
                   </div>
+                </div>
+
+                {/* Show HIL tasks related to this file */}
+                <div className="space-y-4">
+                  {dataset.hilTasks
+                    .filter(task => task.fileId === "234")
+                    .map((task) => (
+                      <div key={task.id} className="p-4 border border-slate-200 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h4 className="font-medium text-slate-900">{task.taskName}</h4>
+                            <p className="text-sm text-slate-600">{task.taskType} • {task.assignedTo || "Unassigned"}</p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            {task.status === "completed" ? (
+                              <CheckCircle className="w-5 h-5 text-green-500" />
+                            ) : task.status === "in-progress" ? (
+                              <Clock className="w-5 h-5 text-blue-500" />
+                            ) : (
+                              <AlertCircle className="w-5 h-5 text-orange-500" />
+                            )}
+                            <Badge className={
+                              task.status === "completed" ? "bg-green-100 text-green-800" :
+                              task.status === "in-progress" ? "bg-blue-100 text-blue-800" :
+                              "bg-orange-100 text-orange-800"
+                            }>
+                              {task.status}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                 </div>
 
                 <div className="overflow-x-auto">
@@ -407,7 +485,7 @@ const SelfServiceRequest = () => {
         <div className="space-y-4">
           {[
             { id: "222", name: "f1100_xvid.avi", format: "AVI", volume: "200 MB" },
-            { id: "234", name: "f1100_xvid.avi", format: "AVI", volume: "200 MB" }
+            { id: "235", name: "customer_transactions", format: "CSV", volume: "5000 Records" }
           ].map((file) => (
             <div key={`${file.id}-${file.name}`} className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
               <div className="flex items-center justify-between">

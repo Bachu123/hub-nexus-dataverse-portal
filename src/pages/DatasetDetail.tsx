@@ -1,18 +1,22 @@
 
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ChevronLeft, Star, Users, GitBranch, Calendar, Database, FileText, Search } from "lucide-react";
+import { ChevronLeft, Star, Users, GitBranch, Calendar, Database, FileText, Search, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { datasets } from "@/data/datasets";
+import { datasets, DatasetFile } from "@/data/datasets";
+import HILStatusBar from "@/components/HILStatusBar";
+import FilePreviewDialog from "@/components/FilePreviewDialog";
 
 const DatasetDetail = () => {
   const { id } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("data");
+  const [previewFile, setPreviewFile] = useState<DatasetFile | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
   
   const dataset = datasets[id || ""];
 
@@ -23,6 +27,11 @@ const DatasetDetail = () => {
   const filteredFiles = dataset.files.filter(file =>
     file.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handlePreviewFile = (file: DatasetFile) => {
+    setPreviewFile(file);
+    setShowPreview(true);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -100,6 +109,9 @@ const DatasetDetail = () => {
 
       {/* Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* HIL Status Bar */}
+        <HILStatusBar hilTasks={dataset.hilTasks} />
+
         {/* About Section */}
         <div className="bg-white rounded-xl p-6 mb-8 shadow-sm border border-slate-200">
           <h2 className="text-xl font-semibold text-slate-900 mb-4">About</h2>
@@ -176,7 +188,8 @@ const DatasetDetail = () => {
                     <TableHead className="text-white">Description</TableHead>
                     <TableHead className="text-white">Format</TableHead>
                     <TableHead className="text-white">Volume</TableHead>
-                    <TableHead className="text-white">Evaluation report</TableHead>
+                    <TableHead className="text-white">Usability Score</TableHead>
+                    <TableHead className="text-white">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -205,9 +218,32 @@ const DatasetDetail = () => {
                       </TableCell>
                       <TableCell className="text-slate-600">{file.volume}</TableCell>
                       <TableCell>
-                        <div className="flex items-center">
-                          <FileText className="w-4 h-4 text-purple-600 mr-2" />
-                          <span className="text-purple-600">{file.evaluationReport}</span>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm font-medium">{file.usabilityScore}/100</span>
+                          <div className="w-16 h-2 bg-slate-200 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500"
+                              style={{ width: `${file.usabilityScore}%` }}
+                            />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handlePreviewFile(file)}
+                          >
+                            <Eye className="w-4 h-4 mr-1" />
+                            Preview
+                          </Button>
+                          {file.reportUrl && (
+                            <Button variant="outline" size="sm">
+                              <FileText className="w-4 h-4 mr-1" />
+                              Report
+                            </Button>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>
@@ -230,6 +266,13 @@ const DatasetDetail = () => {
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* File Preview Dialog */}
+      <FilePreviewDialog 
+        file={previewFile}
+        open={showPreview}
+        onOpenChange={setShowPreview}
+      />
     </div>
   );
 };
