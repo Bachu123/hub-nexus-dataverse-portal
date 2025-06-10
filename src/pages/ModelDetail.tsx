@@ -5,14 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, GitBranch, PipelineIcon, Activity } from 'lucide-react';
+import { ArrowLeft, GitBranch, Activity } from 'lucide-react';
 import { getModelById } from '@/data/mockModels';
 import { ModelObjectiveTab } from '@/components/ModelObjectiveTab';
 import { ModelDataSheetTab } from '@/components/ModelDataSheetTab';
-import { ModelTrainingTab } from '@/components/ModelTrainingTab';
-import { ModelAIOpsTab } from '@/components/ModelAIOpsTab';
-import { CompareReportsModal } from '@/components/CompareReportsModal';
-import { NewTrainingDrawer } from '@/components/NewTrainingDrawer';
 
 const ModelDetail = () => {
   const { id } = useParams();
@@ -101,7 +97,7 @@ const ModelDetail = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Pipelines</CardTitle>
-                <PipelineIcon className="h-4 w-4 text-muted-foreground" />
+                <Activity className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{model.stats.pipelines}</div>
@@ -135,11 +131,9 @@ const ModelDetail = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="objective" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="objective">Objective</TabsTrigger>
             <TabsTrigger value="datasheet">Data Sheet</TabsTrigger>
-            <TabsTrigger value="training">Training</TabsTrigger>
-            <TabsTrigger value="aiops">AI-Ops</TabsTrigger>
           </TabsList>
 
           <TabsContent value="objective">
@@ -149,34 +143,8 @@ const ModelDetail = () => {
           <TabsContent value="datasheet">
             <ModelDataSheetTab model={model} />
           </TabsContent>
-
-          <TabsContent value="training">
-            <ModelTrainingTab 
-              model={model}
-              selectedRuns={selectedTrainingRuns}
-              onRunSelectionChange={setSelectedTrainingRuns}
-              onNewTraining={() => setShowNewTrainingDrawer(true)}
-            />
-          </TabsContent>
-
-          <TabsContent value="aiops">
-            <ModelAIOpsTab model={model} />
-          </TabsContent>
         </Tabs>
       </div>
-
-      {/* Modals and Drawers */}
-      <CompareReportsModal 
-        open={showCompareModal}
-        onOpenChange={setShowCompareModal}
-        selectedRuns={selectedTrainingRuns}
-      />
-      
-      <NewTrainingDrawer 
-        open={showNewTrainingDrawer}
-        onOpenChange={setShowNewTrainingDrawer}
-        model={model}
-      />
     </div>
   );
 };

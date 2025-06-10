@@ -14,8 +14,19 @@ const filterOptions = {
   fineTuningTasks: ['Classification', 'Sentiment Analysis', 'Named Entity Recognition', 'Summarization']
 };
 
-export const ModelFilters = ({ filters, onFiltersChange }) => {
-  const handleFilterChange = (category, value, checked) => {
+interface ModelFiltersProps {
+  filters: {
+    collections: string[];
+    industries: string[];
+    deploymentOptions: string[];
+    inferenceTasks: string[];
+    fineTuningTasks: string[];
+  };
+  onFiltersChange: (filters: any) => void;
+}
+
+export const ModelFilters = ({ filters, onFiltersChange }: ModelFiltersProps) => {
+  const handleFilterChange = (category: string, value: string, checked: boolean) => {
     const newFilters = { ...filters };
     if (checked) {
       newFilters[category] = [...newFilters[category], value];
@@ -25,7 +36,7 @@ export const ModelFilters = ({ filters, onFiltersChange }) => {
     onFiltersChange(newFilters);
   };
 
-  const removeFilter = (category, value) => {
+  const removeFilter = (category: string, value: string) => {
     const newFilters = { ...filters };
     newFilters[category] = newFilters[category].filter(item => item !== value);
     onFiltersChange(newFilters);
@@ -35,7 +46,7 @@ export const ModelFilters = ({ filters, onFiltersChange }) => {
     const clearedFilters = Object.keys(filters).reduce((acc, key) => {
       acc[key] = [];
       return acc;
-    }, {});
+    }, {} as any);
     onFiltersChange(clearedFilters);
   };
 
@@ -43,7 +54,7 @@ export const ModelFilters = ({ filters, onFiltersChange }) => {
     return Object.values(filters).flat().length;
   };
 
-  const FilterDropdown = ({ category, label }) => (
+  const FilterDropdown = ({ category, label }: { category: string; label: string }) => (
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" className="justify-between">
@@ -63,7 +74,7 @@ export const ModelFilters = ({ filters, onFiltersChange }) => {
               <Checkbox
                 id={`${category}-${option}`}
                 checked={filters[category].includes(option)}
-                onCheckedChange={(checked) => handleFilterChange(category, option, checked)}
+                onCheckedChange={(checked) => handleFilterChange(category, option, !!checked)}
               />
               <label
                 htmlFor={`${category}-${option}`}
@@ -99,7 +110,7 @@ export const ModelFilters = ({ filters, onFiltersChange }) => {
       {getTotalActiveFilters() > 0 && (
         <div className="flex flex-wrap gap-2">
           {Object.entries(filters).map(([category, values]) =>
-            values.map((value) => (
+            values.map((value: string) => (
               <Badge key={`${category}-${value}`} variant="secondary" className="pr-1">
                 {value}
                 <Button
