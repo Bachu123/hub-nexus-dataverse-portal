@@ -9,7 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { mockDatasets } from '@/data/datasets';
+import { datasets } from '@/data/datasets';
 
 interface NewTrainingDrawerProps {
   isOpen: boolean;
@@ -82,6 +82,9 @@ export const NewTrainingDrawer = ({ isOpen, onClose, onSubmit }: NewTrainingDraw
     setSelectedDatasets([]);
     setObjective('');
   };
+
+  // Convert datasets object to array
+  const datasetArray = Object.values(datasets);
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -163,7 +166,7 @@ export const NewTrainingDrawer = ({ isOpen, onClose, onSubmit }: NewTrainingDraw
               Select datasets from the Data Marketplace to use for training
             </p>
             <div className="space-y-3 max-h-60 overflow-y-auto">
-              {mockDatasets.slice(0, 6).map((dataset) => (
+              {datasetArray.slice(0, 6).map((dataset) => (
                 <Card key={dataset.id} className="p-3">
                   <div className="flex items-start space-x-3">
                     <Checkbox
@@ -173,7 +176,7 @@ export const NewTrainingDrawer = ({ isOpen, onClose, onSubmit }: NewTrainingDraw
                     />
                     <div className="flex-1 min-w-0">
                       <Label htmlFor={dataset.id} className="font-medium">
-                        {dataset.title}
+                        {dataset.name}
                       </Label>
                       <p className="text-sm text-muted-foreground mt-1">
                         {dataset.description}
