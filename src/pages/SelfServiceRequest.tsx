@@ -1,11 +1,13 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronLeft, Plus } from "lucide-react";
+import { ChevronLeft, Plus, FileCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { datasets } from "@/data/datasets";
+import XMLEditor from "@/components/XMLEditor";
+import { useToast } from "@/components/ui/use-toast";
 
 const SelfServiceRequest = () => {
   const [taskName, setTaskName] = useState("");
@@ -13,6 +15,8 @@ const SelfServiceRequest = () => {
   const [selectedUseCase, setSelectedUseCase] = useState("Computer Vision");
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [selectedFile, setSelectedFile] = useState("");
+  const [showXMLEditor, setShowXMLEditor] = useState(false);
+  const { toast } = useToast();
 
   const dataset = datasets["hav-df"];
 
@@ -62,7 +66,11 @@ const SelfServiceRequest = () => {
 
   const handleSubmitTask = () => {
     if (!taskName || !selectedFile) {
-      alert("Please fill in task name and select a file");
+      toast({
+        title: "Missing Information",
+        description: "Please fill in task name and select a file",
+        variant: "destructive"
+      });
       return;
     }
     
@@ -80,7 +88,19 @@ const SelfServiceRequest = () => {
     setDescription("");
     setSelectedFile("");
     
-    alert("Task created successfully! It will appear in the HIL dashboard.");
+    toast({
+      title: "Task Created",
+      description: "Task created successfully! It will appear in the HIL dashboard.",
+    });
+  };
+
+  const handleXMLSubmit = (xmlContent: string) => {
+    console.log("Submitting XML HIL task:", xmlContent);
+    
+    toast({
+      title: "XML Task Created",
+      description: "Your custom XML HIL task has been created successfully!",
+    });
   };
 
   return (
@@ -102,9 +122,43 @@ const SelfServiceRequest = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* HIL Task Creation Form */}
+        {/* Method Selection */}
         <div className="bg-white rounded-xl p-6 mb-8 shadow-sm border border-slate-200">
           <h2 className="text-xl font-semibold text-slate-900 mb-6">Create HIL Task</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Standard Form Method */}
+            <div className="border-2 border-dashed border-slate-200 rounded-lg p-6 hover:border-slate-300 transition-colors">
+              <div className="text-center">
+                <Plus className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-slate-900 mb-2">Standard Form</h3>
+                <p className="text-slate-600 mb-4">Use our guided form to create a HIL task with predefined templates and use cases.</p>
+                <p className="text-sm text-slate-500">Recommended for most users</p>
+              </div>
+            </div>
+
+            {/* XML Import Method */}
+            <div className="border-2 border-dashed border-purple-200 rounded-lg p-6 hover:border-purple-300 transition-colors">
+              <div className="text-center">
+                <FileCode className="w-12 h-12 text-purple-500 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-slate-900 mb-2">Import XML</h3>
+                <p className="text-slate-600 mb-4">Advanced users can import a custom XML configuration for complete control over HIL task settings.</p>
+                <Button 
+                  onClick={() => setShowXMLEditor(true)}
+                  variant="outline"
+                  className="border-purple-600 text-purple-600 hover:bg-purple-50"
+                >
+                  <FileCode className="w-4 h-4 mr-2" />
+                  Import XML
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Standard HIL Task Creation Form */}
+        <div className="bg-white rounded-xl p-6 mb-8 shadow-sm border border-slate-200">
+          <h3 className="text-lg font-medium text-slate-900 mb-6">Standard Task Configuration</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
@@ -145,7 +199,7 @@ const SelfServiceRequest = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Use Case Selection */}
             <div>
-              <h3 className="text-lg font-medium text-slate-900 mb-4">Use Case</h3>
+              <h4 className="text-lg font-medium text-slate-900 mb-4">Use Case</h4>
               <div className="space-y-2">
                 {useCases.map((useCase) => (
                   <button
@@ -165,7 +219,7 @@ const SelfServiceRequest = () => {
 
             {/* Template Selection */}
             <div>
-              <h3 className="text-lg font-medium text-slate-900 mb-4">Select Template</h3>
+              <h4 className="text-lg font-medium text-slate-900 mb-4">Select Template</h4>
               <div className="grid grid-cols-2 gap-4">
                 {templates.map((template) => (
                   <button
@@ -208,12 +262,28 @@ const SelfServiceRequest = () => {
         {/* Information Section */}
         <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
           <h3 className="text-lg font-medium text-slate-900 mb-4">How it works</h3>
-          <div className="space-y-4 text-slate-600">
-            <p>1. <strong>Select a target file</strong> from the dataset that you want to create a HIL task for.</p>
-            <p>2. <strong>Choose your use case</strong> from the available options to match your annotation needs.</p>
-            <p>3. <strong>Pick a template</strong> that best fits your data annotation requirements.</p>
-            <p>4. <strong>Provide task details</strong> including name and description for clear task identification.</p>
-            <p>5. <strong>Submit the task</strong> and it will be added to the HIL pipeline for processing.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h4 className="font-medium text-slate-900 mb-3">Standard Form</h4>
+              <div className="space-y-3 text-slate-600">
+                <p>1. <strong>Select a target file</strong> from the dataset that you want to create a HIL task for.</p>
+                <p>2. <strong>Choose your use case</strong> from the available options to match your annotation needs.</p>
+                <p>3. <strong>Pick a template</strong> that best fits your data annotation requirements.</p>
+                <p>4. <strong>Provide task details</strong> including name and description for clear task identification.</p>
+                <p>5. <strong>Submit the task</strong> and it will be added to the HIL pipeline for processing.</p>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="font-medium text-slate-900 mb-3">XML Import</h4>
+              <div className="space-y-3 text-slate-600">
+                <p>1. <strong>Click Import XML</strong> to open the advanced XML editor.</p>
+                <p>2. <strong>Paste or upload</strong> your custom XML configuration file.</p>
+                <p>3. <strong>Use auto-complete</strong> to help with valid element and attribute names.</p>
+                <p>4. <strong>Validate your XML</strong> against the HIL task schema before submission.</p>
+                <p>5. <strong>Submit directly</strong> for complete control over task configuration.</p>
+              </div>
+            </div>
           </div>
           
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -223,6 +293,13 @@ const SelfServiceRequest = () => {
             </p>
           </div>
         </div>
+
+        {/* XML Editor Modal */}
+        <XMLEditor
+          isOpen={showXMLEditor}
+          onClose={() => setShowXMLEditor(false)}
+          onSubmit={handleXMLSubmit}
+        />
       </main>
     </div>
   );
