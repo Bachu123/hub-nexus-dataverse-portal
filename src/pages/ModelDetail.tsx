@@ -9,6 +9,10 @@ import { ArrowLeft, GitBranch, Activity } from 'lucide-react';
 import { getModelById } from '@/data/mockModels';
 import { ModelObjectiveTab } from '@/components/ModelObjectiveTab';
 import { ModelDataSheetTab } from '@/components/ModelDataSheetTab';
+import { ModelTrainingTab } from '@/components/ModelTrainingTab';
+import { ModelAIOpsTab } from '@/components/ModelAIOpsTab';
+import { CompareReportsModal } from '@/components/CompareReportsModal';
+import { NewTrainingDrawer } from '@/components/NewTrainingDrawer';
 
 const ModelDetail = () => {
   const { id } = useParams();
@@ -49,6 +53,15 @@ const ModelDetail = () => {
     if (selectedTrainingRuns.length >= 2) {
       setShowCompareModal(true);
     }
+  };
+
+  const handleNewTraining = () => {
+    setShowNewTrainingDrawer(true);
+  };
+
+  const handleTrainingSubmit = (trainingConfig) => {
+    console.log('New training configuration:', trainingConfig);
+    // In a real app, this would submit to the API
   };
 
   return (
@@ -123,7 +136,7 @@ const ModelDetail = () => {
             >
               Compare Reports ({selectedTrainingRuns.length})
             </Button>
-            <Button onClick={() => setShowNewTrainingDrawer(true)}>
+            <Button onClick={handleNewTraining}>
               + New Training
             </Button>
           </div>
@@ -131,9 +144,11 @@ const ModelDetail = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="objective" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="objective">Objective</TabsTrigger>
             <TabsTrigger value="datasheet">Data Sheet</TabsTrigger>
+            <TabsTrigger value="training">Training</TabsTrigger>
+            <TabsTrigger value="aiops">AI-Ops</TabsTrigger>
           </TabsList>
 
           <TabsContent value="objective">
@@ -143,7 +158,33 @@ const ModelDetail = () => {
           <TabsContent value="datasheet">
             <ModelDataSheetTab model={model} />
           </TabsContent>
+
+          <TabsContent value="training">
+            <ModelTrainingTab 
+              model={model}
+              selectedTrainingRuns={selectedTrainingRuns}
+              onTrainingRunsChange={setSelectedTrainingRuns}
+              onNewTraining={handleNewTraining}
+            />
+          </TabsContent>
+
+          <TabsContent value="aiops">
+            <ModelAIOpsTab model={model} />
+          </TabsContent>
         </Tabs>
+
+        {/* Modals and Drawers */}
+        <CompareReportsModal
+          isOpen={showCompareModal}
+          onClose={() => setShowCompareModal(false)}
+          selectedRuns={selectedTrainingRuns}
+        />
+
+        <NewTrainingDrawer
+          isOpen={showNewTrainingDrawer}
+          onClose={() => setShowNewTrainingDrawer(false)}
+          onSubmit={handleTrainingSubmit}
+        />
       </div>
     </div>
   );
