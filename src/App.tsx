@@ -33,7 +33,10 @@ const App = () => {
             <Route path="/" element={<Index />} />
             <Route path="/data-marketplace" element={<DataMarketplace />} />
             <Route path="/dataset/:id" element={<DatasetDetail />} />
-            <Route path="/self-service-request" element={<SelfServiceRequest />} />
+            <Route
+              path="/self-service-request"
+              element={<SelfServiceRequest />}
+            />
             <Route path="/architecture" element={<Architecture />} />
             <Route path="/model-catalog" element={<ModelCatalog />} />
             <Route path="/models/:id" element={<ModelDetail />} />

@@ -29,12 +29,15 @@ const SelfServiceRequest = () => {
   const dataset = datasets[datasetId];
   const selectedFileInfo = dataset.files.find((f) => f.id === selectedFile);
 
+
   const handleSubmitTask = () => {
     if (!taskName || !selectedFile) {
       toast({
         title: "Missing Information",
-        description: "Please fill in task name and select a target file.",
-        variant: "destructive",
+
+        description: "Please fill in task name. No target file selected.",
+        variant: "destructive"
+
       });
       return;
     }
@@ -51,7 +54,6 @@ const SelfServiceRequest = () => {
 
     setTaskName("");
     setDescription("");
-
     toast({
       title: "Task Created",
       description:
@@ -76,11 +78,11 @@ const SelfServiceRequest = () => {
       <header className="bg-white border-b border-slate-200 px-6 py-4">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center space-x-4">
-            <Link
-              to={`/dataset/${datasetId}`}
-              className="flex items-center text-purple-600 hover:text-purple-700"
-            >
-              <ChevronLeft className="w-5 h-5 mr-1" /> Back
+
+            <Link to={`/dataset/${datasetId}`} className="flex items-center text-purple-600 hover:text-purple-700">
+              <ChevronLeft className="w-5 h-5 mr-1" />
+              Back
+
             </Link>
             <div className="text-slate-400">|</div>
             <span className="text-slate-600">Data Hub</span>
@@ -102,14 +104,19 @@ const SelfServiceRequest = () => {
                 className="border-purple-600 text-purple-600 hover:bg-purple-50"
                 disabled={!!xmlData}
               >
+
                 <FileCode className="w-4 h-4 mr-2" /> Import XML
+
               </Button>
               <Button
                 onClick={() => setShowPreview(true)}
                 variant="outline"
                 disabled={!xmlData}
               >
+
+
                 <Eye className="w-4 h-4 mr-2" /> Preview XML
+
               </Button>
             </div>
           </div>
@@ -170,13 +177,15 @@ const SelfServiceRequest = () => {
           {/* Description */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-slate-700 mb-2">Description</label>
-            <Textarea
-              placeholder="Enter task description..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="min-h-[80px]"
-              disabled={!!xmlData}
-            />
+
+          <Textarea
+            placeholder="Enter task description..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="min-h-[80px]"
+            disabled={!!xmlData}
+          />
+
           </div>
 
           {/* Use Case & Template */}
@@ -312,6 +321,7 @@ const SelfServiceRequest = () => {
           onClose={() => setShowXMLEditor(false)}
           onSubmit={handleXMLSubmit}
         />
+
         <XMLPreviewDialog
           xml={xmlData || ""}
           open={showPreview}

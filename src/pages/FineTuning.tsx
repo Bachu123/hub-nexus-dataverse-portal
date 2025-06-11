@@ -12,6 +12,8 @@ import { ChevronLeft, Database, Play, Settings } from 'lucide-react';
 import { datasets } from '@/constants/datasets';
 import { getModelById } from '@/constants/models';
 
+import { UseAsServiceModal } from '@/components/UseAsServiceModal';
+
 const FineTuning = () => {
   const { modelId } = useParams<{ modelId: string }>();
   const navigate = useNavigate();
@@ -22,26 +24,49 @@ const FineTuning = () => {
     batchSize: '32',
     epochs: '10'
   });
+  const [computePlatform, setComputePlatform] = useState('');
+  const [selectedAspects, setSelectedAspects] = useState<string[]>([]);
+  const [perspective, setPerspective] = useState('');
+  const [biasDoc, setBiasDoc] = useState<File | null>(null);
   const [isTraining, setIsTraining] = useState(false);
+  const [showServiceModal, setShowServiceModal] = useState(false);
 
   const model = modelId ? getModelById(modelId) : null;
   const availableDatasets = Object.values(datasets);
+  const evaluationAspects = [
+    'Performance',
+    'Robustness',
+    'Fairness',
+    'Efficiency',
+    'Safety',
+    'Interpretability'
+  ];
+  const gpuOptions = [
+    'AWS A100',
+    'Azure V100',
+    'GCP T4',
+    'On-Premise'
+  ];
 
   const handleStartTraining = () => {
-    if (!selectedDataset || !objective) return;
+    if (!selectedDataset || !objective || !computePlatform) return;
     
     setIsTraining(true);
     console.log('Starting fine-tuning...', {
       model: model?.name,
       dataset: selectedDataset,
       objective,
-      hyperparameters
+      hyperparameters,
+      computePlatform,
+      aspects: selectedAspects,
+      perspective,
+      biasDoc
     });
     
     // Simulate training process
     setTimeout(() => {
       setIsTraining(false);
-      navigate(`/models/${modelId}`);
+      setShowServiceModal(true);
     }, 3000);
   };
 
@@ -50,6 +75,7 @@ const FineTuning = () => {
   }
 
   return (
+    <>
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 px-6 py-4">
@@ -168,6 +194,68 @@ const FineTuning = () => {
                 </div>
 
                 <div>
+                  <Label>GPU Platform *</Label>
+                  <Select value={computePlatform} onValueChange={setComputePlatform}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select GPU" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {gpuOptions.map((opt) => (
+                        <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Evaluation Aspects</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {evaluationAspects.map((aspect) => (
+                      <div key={aspect} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id={aspect}
+                          checked={selectedAspects.includes(aspect)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedAspects([...selectedAspects, aspect]);
+                            } else {
+                              setSelectedAspects(selectedAspects.filter(a => a !== aspect));
+                            }
+                          }}
+                        />
+                        <Label htmlFor={aspect} className="text-sm">
+                          {aspect}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="perspective">Perspective</Label>
+                  <Input
+                    id="perspective"
+                    value={perspective}
+                    onChange={(e) => setPerspective(e.target.value)}
+                    placeholder="e.g. ethics, bias check"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="bias-doc">Upload Guidelines</Label>
+                  <Input
+                    id="bias-doc"
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) => setBiasDoc(e.target.files?.[0] || null)}
+                  />
+                  {biasDoc && (
+                    <p className="text-sm text-slate-600 mt-1">Selected: {biasDoc.name}</p>
+                  )}
+                </div>
+
+                <div>
                   <Label htmlFor="epochs">Epochs</Label>
                   <Input
                     id="epochs"
@@ -179,9 +267,9 @@ const FineTuning = () => {
                   />
                 </div>
 
-                <Button 
+                <Button
                   onClick={handleStartTraining}
-                  disabled={!selectedDataset || !objective || isTraining}
+                  disabled={!selectedDataset || !objective || !computePlatform || isTraining}
                   className="w-full bg-purple-600 hover:bg-purple-700"
                 >
                   {isTraining ? (
@@ -202,6 +290,20 @@ const FineTuning = () => {
         </div>
       </div>
     </div>
+    <UseAsServiceModal
+      open={showServiceModal}
+      onClose={() => {
+        setShowServiceModal(false);
+        navigate(`/models/${modelId}`);
+      }}
+      modelName={model?.name || ''}
+      onCreateService={(serviceData) => {
+        if ((window as any).addAIService) {
+          (window as any).addAIService(serviceData);
+        }
+      }}
+    />
+    </>
   );
 };
 
