@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FileText, Download, Eye } from "lucide-react";
-import { DatasetFile } from "@/data/datasets";
+import { DatasetFile } from "@/constants/datasets";
 
 interface FilePreviewDialogProps {
   file: DatasetFile | null;

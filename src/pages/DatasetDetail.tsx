@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { datasets, DatasetFile } from "@/data/datasets";
+import { datasets, DatasetFile } from "@/constants/datasets";
 import HILStatusBar from "@/components/HILStatusBar";
 import FilePreviewDialog from "@/components/FilePreviewDialog";
 import ExpandableFileRow from "@/components/ExpandableFileRow";
