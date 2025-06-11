@@ -2,42 +2,69 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { systemArchitecturePages } from '@/constants/architecture';
 import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Architecture = () => {
-  const [index, setIndex] = useState(0);
-  const total = systemArchitecturePages.length;
-  const page = systemArchitecturePages[index];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const totalPages = systemArchitecturePages.length;
+  const currentPage = systemArchitecturePages[currentIndex];
 
-  const prev = () => setIndex((i) => Math.max(0, i - 1));
-  const next = () => setIndex((i) => Math.min(total - 1, i + 1));
+  const goToPrevious = () => {
+    setCurrentIndex((prevIndex) => Math.max(0, prevIndex - 1));
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prevIndex) => Math.min(totalPages - 1, prevIndex + 1));
+  };
 
   return (
-    <div className="p-6 min-h-screen bg-slate-50">
-      <div className="max-w-6xl mx-auto space-y-4">
-        <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 md:p-8 min-h-screen bg-slate-50 flex flex-col">
+      <div className="max-w-7xl w-full mx-auto flex-grow flex flex-col space-y-4">
+        <header className="flex items-center justify-between bg-white p-4 border border-slate-200 rounded-lg shadow-sm">
           <Link
-            to="/self-service-request"
-            className="text-purple-600 hover:underline"
+            to="/infra-hub/pipelines"
+            className="text-sm font-medium text-purple-600 hover:text-purple-800 hover:underline"
           >
-            Back to Request
+            &larr; Back to Pipelines
           </Link>
-          <div className="flex items-center space-x-2">
-            <Button variant="outline" size="sm" onClick={prev} disabled={index === 0}>
-              Prev
+          <div className="flex items-center space-x-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={goToPrevious}
+              disabled={currentIndex === 0}
+              className="flex items-center gap-1"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              <span>Prev</span>
             </Button>
-            <span className="text-sm text-slate-600">
-              Page {index + 1} of {total}
-            </span>
-            <Button variant="outline" size="sm" onClick={next} disabled={index === total - 1}>
-              Next
+            <div className="text-sm font-medium text-slate-600 tabular-nums">
+              <span>{currentPage.title}</span>
+              <span className="text-slate-400 mx-2">|</span>
+              <span>
+                {currentIndex + 1} / {totalPages}
+              </span>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={goToNext}
+              disabled={currentIndex === totalPages - 1}
+              className="flex items-center gap-1"
+            >
+              <span>Next</span>
+              <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
-        </div>
-        <iframe
-          title={page.title}
-          srcDoc={page.html}
-          className="w-full h-[80vh] border rounded"
-        />
+        </header>
+        <main className="flex-grow">
+          <iframe
+            title={currentPage.title}
+            srcDoc={currentPage.html}
+            className="w-full h-full border border-slate-200 rounded-lg shadow-sm bg-white"
+            style={{ minHeight: '75vh' }}
+          />
+        </main>
       </div>
     </div>
   );
