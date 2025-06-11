@@ -1,12 +1,13 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronLeft, Plus, FileCode } from "lucide-react";
+import { ChevronLeft, Plus, FileCode, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { datasets } from "@/data/datasets";
 import XMLEditor from "@/components/XMLEditor";
+import XMLPreviewDialog from "@/components/XMLPreviewDialog";
 import { useToast } from "@/components/ui/use-toast";
 
 const SelfServiceRequest = () => {
@@ -16,6 +17,8 @@ const SelfServiceRequest = () => {
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [selectedFile, setSelectedFile] = useState("");
   const [showXMLEditor, setShowXMLEditor] = useState(false);
+  const [xmlData, setXmlData] = useState<string | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
   const { toast } = useToast();
 
   const dataset = datasets["hav-df"];
@@ -95,8 +98,9 @@ const SelfServiceRequest = () => {
   };
 
   const handleXMLSubmit = (xmlContent: string) => {
+    setXmlData(xmlContent);
     console.log("Submitting XML HIL task:", xmlContent);
-    
+
     toast({
       title: "XML Task Created",
       description: "Your custom XML HIL task has been created successfully!",
@@ -124,33 +128,41 @@ const SelfServiceRequest = () => {
       <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Method Selection */}
         <div className="bg-white rounded-xl p-6 mb-8 shadow-sm border border-slate-200">
-          <h2 className="text-xl font-semibold text-slate-900 mb-6">Create HIL Task</h2>
-          
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-slate-900">Create HIL Task</h2>
+            <div className="space-x-2">
+              <Button
+                onClick={() => setShowXMLEditor(true)}
+                variant="outline"
+                className="border-purple-600 text-purple-600 hover:bg-purple-50"
+                disabled={!!xmlData}
+              >
+                <FileCode className="w-4 h-4" />
+                Import XML
+              </Button>
+              <Button
+                onClick={() => setShowPreview(true)}
+                variant="outline"
+                disabled={!xmlData}
+              >
+                <Eye className="w-4 h-4" />
+                Preview XML
+              </Button>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Standard Form Method */}
-            <div className="border-2 border-dashed border-slate-200 rounded-lg p-6 hover:border-slate-300 transition-colors">
+            <div
+              className={`border-2 border-dashed border-slate-200 rounded-lg p-6 transition-colors ${
+                xmlData ? 'opacity-50 pointer-events-none' : 'hover:border-slate-300'
+              }`}
+            >
               <div className="text-center">
                 <Plus className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-slate-900 mb-2">Standard Form</h3>
                 <p className="text-slate-600 mb-4">Use our guided form to create a HIL task with predefined templates and use cases.</p>
                 <p className="text-sm text-slate-500">Recommended for most users</p>
-              </div>
-            </div>
-
-            {/* XML Import Method */}
-            <div className="border-2 border-dashed border-purple-200 rounded-lg p-6 hover:border-purple-300 transition-colors">
-              <div className="text-center">
-                <FileCode className="w-12 h-12 text-purple-500 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-slate-900 mb-2">Import XML</h3>
-                <p className="text-slate-600 mb-4">Advanced users can import a custom XML configuration for complete control over HIL task settings.</p>
-                <Button 
-                  onClick={() => setShowXMLEditor(true)}
-                  variant="outline"
-                  className="border-purple-600 text-purple-600 hover:bg-purple-50"
-                >
-                  <FileCode className="w-4 h-4 mr-2" />
-                  Import XML
-                </Button>
               </div>
             </div>
           </div>
@@ -167,6 +179,7 @@ const SelfServiceRequest = () => {
                 placeholder="Enter Task Name"
                 value={taskName}
                 onChange={(e) => setTaskName(e.target.value)}
+                disabled={!!xmlData}
               />
             </div>
             <div>
@@ -175,6 +188,7 @@ const SelfServiceRequest = () => {
                 className="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 value={selectedFile}
                 onChange={(e) => setSelectedFile(e.target.value)}
+                disabled={!!xmlData}
               >
                 <option value="">Select a file...</option>
                 {dataset.files.map((file) => (
@@ -188,12 +202,13 @@ const SelfServiceRequest = () => {
 
           <div className="mb-6">
             <label className="block text-sm font-medium text-slate-700 mb-2">Description</label>
-            <Textarea
-              placeholder="Enter task description..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="min-h-[80px]"
-            />
+          <Textarea
+            placeholder="Enter task description..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="min-h-[80px]"
+            disabled={!!xmlData}
+          />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -210,6 +225,7 @@ const SelfServiceRequest = () => {
                         ? 'bg-purple-50 border-purple-600 text-purple-900'
                         : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
+                    disabled={!!xmlData}
                   >
                     {useCase}
                   </button>
@@ -230,6 +246,7 @@ const SelfServiceRequest = () => {
                         ? 'border-purple-600 ring-2 ring-purple-600/20'
                         : 'border-slate-200 hover:border-slate-300'
                     }`}
+                    disabled={!!xmlData}
                   >
                     <div className="aspect-video relative overflow-hidden">
                       <img 
@@ -249,9 +266,10 @@ const SelfServiceRequest = () => {
           </div>
 
           <div className="flex justify-end mt-6">
-            <Button 
+            <Button
               className="bg-purple-600 hover:bg-purple-700 text-white"
               onClick={handleSubmitTask}
+              disabled={!!xmlData}
             >
               <Plus className="w-4 h-4 mr-2" />
               Create HIL Task
@@ -299,6 +317,12 @@ const SelfServiceRequest = () => {
           isOpen={showXMLEditor}
           onClose={() => setShowXMLEditor(false)}
           onSubmit={handleXMLSubmit}
+        />
+
+        <XMLPreviewDialog
+          xml={xmlData || ""}
+          open={showPreview}
+          onOpenChange={setShowPreview}
         />
       </main>
     </div>
