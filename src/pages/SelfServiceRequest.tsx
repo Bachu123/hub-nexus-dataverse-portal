@@ -94,9 +94,7 @@ const SelfServiceRequest = () => {
         {/* Method Selection */}
         <div className="bg-white rounded-xl p-6 mb-8 shadow-sm border border-slate-200">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-slate-900">
-              Create HIL Task
-            </h2>
+            <h2 className="text-xl font-semibold text-slate-900">Create HIL Task</h2>
             <div className="space-x-2">
               <Button
                 onClick={() => setShowXMLEditor(true)}
@@ -134,9 +132,7 @@ const SelfServiceRequest = () => {
                   Use our guided form to create a HIL task with predefined
                   templates and use cases.
                 </p>
-                <p className="text-sm text-slate-500">
-                  Recommended for most users
-                </p>
+                <p className="text-sm text-slate-500">Recommended for most users</p>
               </div>
             </div>
           </div>
