@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ChevronLeft, Plus, FileCode, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -189,11 +190,27 @@ const SelfServiceRequest = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Target File</label>
+
               <div className="p-2 border border-slate-300 rounded-md bg-slate-50">
                 {selectedFileInfo
                   ? `${selectedFileInfo.name} (${selectedFileInfo.format})`
                   : "No file selected"}
               </div>
+
+              <select
+                className="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                value={selectedFile}
+                onChange={(e) => setSelectedFile(e.target.value)}
+                disabled={!!xmlData}
+              >
+                <option value="">Select a file...</option>
+                {dataset.files.map((file) => (
+                  <option key={file.id} value={file.id}>
+                    {file.name} ({file.format})
+                  </option>
+                ))}
+              </select>
+
             </div>
           </div>
 
