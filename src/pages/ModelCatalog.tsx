@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Star, Search } from 'lucide-react';
 import { ModelFilters } from '@/components/ModelFilters';
-import { mockModels } from '@/data/mockModels';
+import { mockModels } from '@/constants/models';
 
 const ModelCatalog = () => {
   const navigate = useNavigate();

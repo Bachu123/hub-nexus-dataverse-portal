@@ -18,7 +18,7 @@ import { ModelObjectiveTab } from '@/components/ModelObjectiveTab';
 import { ModelTrainingTab } from '@/components/ModelTrainingTab';
 import { ModelDataSheetTab } from '@/components/ModelDataSheetTab';
 import { ModelAIOpsTab } from '@/components/ModelAIOpsTab';
-import { getModelById, mockModels } from '@/data/mockModels';
+import { getModelById, mockModels } from '@/constants/models';
 import { UseAsServiceModal } from '@/components/UseAsServiceModal';
 
 const ModelDetail = () => {

@@ -234,7 +234,12 @@ const XMLEditor: React.FC<XMLEditorProps> = ({ isOpen, onClose, onSubmit }) => {
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type === 'text/xml') {
+    const isXMLFile =
+      file &&
+      (file.type === 'text/xml' ||
+        file.type === 'application/xml' ||
+        file.name.toLowerCase().endsWith('.xml'));
+    if (isXMLFile && file) {
       const reader = new FileReader();
       reader.onload = (event) => {
         const content = event.target?.result as string;
