@@ -172,45 +172,72 @@ export const pipelineTemplates: Record<string, Pipeline> = {
   'deepfake-detection': {
     id: 'deepfake-detection',
     name: 'Deepfake Detection',
-    description: 'Identify manipulated media files in a dataset.',
-    lastExecutionStatus: 'failed',
-    lastExecutionTime: '2025-06-16 09:45',
+    description: 'Identify manipulated media files in a dataset by analyzing various visual features.',
+    lastExecutionStatus: 'running',
+    lastExecutionTime: '2025-06-17 11:30',
     availableFiles: 100,
-    processedFiles: 40,
-    remainingFiles: 60,
+    processedFiles: 25,
+    remainingFiles: 75,
     aiServices: [
       {
         id: 'frame-extraction',
-        name: 'Frame Extraction',
+        name: 'Preprocessing: Video to Frames',
         status: 'success',
         executedBy: 'system',
-        startTime: 'Jun 16, 2025, 09:45:00 AM',
-        endTime: 'Jun 16, 2025, 09:48:22 AM',
-        executionTime: 202,
-        processedRecords: 40,
-        latency: 5050, // avg latency per record
+        startTime: 'Jun 17, 2025, 11:30:00 AM',
+        endTime: 'Jun 17, 2025, 11:32:15 AM',
+        executionTime: 135,
+        processedRecords: 100,
+        latency: 1350,
         memoryPeak: '2GB',
-        input: { videoFiles: 40 },
-        output: { frameBatches: 40 }
+        input: { videoFiles: 100 },
+        output: { frameBatches: 100 }
       },
       {
-        id: 'deepfake-classifier',
-        name: 'Deepfake Classifier',
-        status: 'failed',
+        id: 'face-detector',
+        name: 'Feature Extraction: Face Detector',
+        status: 'running',
         executedBy: 'system',
-        startTime: 'Jun 16, 2025, 09:48:22 AM',
-        endTime: 'Jun 16, 2025, 09:52:30 AM',
-        executionTime: 248,
-        processedRecords: 22, // Failed after processing 22 out of 40 records
-        latency: 11272,
-        memoryPeak: '8GB',
-        input: { frameBatches: 40 },
-        output: null,
-        errorMessage: 'Classifier failed: CUDA out of memory. Tried to allocate 3.25 GiB.'
+        startTime: 'Jun 17, 2025, 11:32:15 AM',
+        endTime: '',
+        executionTime: 180,
+        processedRecords: 60,
+        latency: 3000,
+        memoryPeak: '4GB',
+        input: { frameBatches: 100 },
+        output: null
       },
       {
-        id: 'reporting',
-        name: 'Reporting',
+        id: 'lip-sync-analyzer',
+        name: 'Feature Extraction: Lip Sync Analyzer',
+        status: 'running',
+        executedBy: 'system',
+        startTime: 'Jun 17, 2025, 11:32:15 AM',
+        endTime: '',
+        executionTime: 180,
+        processedRecords: 55,
+        latency: 3270,
+        memoryPeak: '3.5GB',
+        input: { frameBatches: 100 },
+        output: null
+      },
+      {
+        id: 'optical-flow',
+        name: 'Feature Extraction: Optical Flow',
+        status: 'running',
+        executedBy: 'system',
+        startTime: 'Jun 17, 2025, 11:32:15 AM',
+        endTime: '',
+        executionTime: 180,
+        processedRecords: 62,
+        latency: 2900,
+        memoryPeak: '5GB',
+        input: { frameBatches: 100 },
+        output: null
+      },
+      {
+        id: 'aggregate-scores',
+        name: 'Aggregate Scores',
         status: 'pending',
         executedBy: 'system',
         startTime: '',
@@ -219,18 +246,46 @@ export const pipelineTemplates: Record<string, Pipeline> = {
         processedRecords: 0,
         latency: 0,
         memoryPeak: 'N/A',
-        input: {},
+        input: { scores: ['face', 'lip', 'flow'] },
+        output: null
+      },
+      {
+        id: 'generate-verdict',
+        name: 'Generate Final Verdict',
+        status: 'pending',
+        executedBy: 'system',
+        startTime: '',
+        endTime: '',
+        executionTime: 0,
+        processedRecords: 0,
+        latency: 0,
+        memoryPeak: 'N/A',
+        input: { aggregatedScore: 'number' },
+        output: null
+      },
+      {
+        id: 'reporting',
+        name: 'Deepfake Detection Report',
+        status: 'pending',
+        executedBy: 'system',
+        startTime: '',
+        endTime: '',
+        executionTime: 0,
+        processedRecords: 0,
+        latency: 0,
+        memoryPeak: 'N/A',
+        input: { verdict: 'object' },
         output: null
       }
     ],
     executions: [
       {
-        id: 'exec-200',
+        id: 'exec-201',
         type: 'Scheduler',
         executedBy: 'system',
-        startDate: '2025-06-16 09:45:00',
-        endDate: '2025-06-16 09:52:31',
-        status: 'failed',
+        startDate: '2025-06-17 11:30:00',
+        endDate: '',
+        status: 'running',
         records: []
       }
     ]
@@ -254,12 +309,14 @@ export const pipelineLogs: Record<string, Array<{ timestamp: string; message: st
     { timestamp: '2025-06-15T10:05:06Z', message: 'Model fine-tuning is now pending user approval based on 2 violations.', level: 'warn' }
   ],
   'deepfake-detection': [
-    { timestamp: '2025-06-16T09:45:00Z', message: 'Scheduled execution of Deepfake Detection pipeline started.', level: 'info' },
-    { timestamp: '2025-06-16T09:45:01Z', message: 'Frame extraction started for 100 available files.', level: 'info' },
-    { timestamp: '2025-06-16T09:46:00Z', message: 'Processed 10/100 files in frame extraction.', level: 'info' },
-    { timestamp: '2025-06-16T09:48:22Z', message: 'Frame extraction completed. Starting classifier.', level: 'info' },
-    { timestamp: '2025-06-16T09:50:15Z', message: 'Classifier progress: 20/40 batches processed.', level: 'info' },
-    { timestamp: '2025-06-16T09:52:30Z', message: 'Classifier failed: CUDA out of memory. Tried to allocate 3.25 GiB. Check resource allocation.', level: 'error' },
-    { timestamp: '2025-06-16T09:52:31Z', message: 'Pipeline execution has been marked as failed. Reporting step will not be executed.', level: 'error' }
+    { timestamp: '2025-06-17T11:30:00Z', message: 'Scheduled execution of Deepfake Detection pipeline started.', level: 'info' },
+    { timestamp: '2025-06-17T11:30:01Z', message: 'Preprocessing: Video to Frames started for 100 available files.', level: 'info' },
+    { timestamp: '2025-06-17T11:31:00Z', message: 'Preprocessing: Processed 50/100 files.', level: 'info' },
+    { timestamp: '2025-06-17T11:32:15Z', message: 'Preprocessing complete. Starting parallel feature extraction.', level: 'info' },
+    { timestamp: '2025-06-17T11:32:16Z', message: 'Feature Extraction: Face Detector started.', level: 'info' },
+    { timestamp: '2025-06-17T11:32:17Z', message: 'Feature Extraction: Lip Sync Analyzer started.', level: 'info' },
+    { timestamp: '2025-06-17T11:32:18Z', message: 'Feature Extraction: Optical Flow started.', level: 'info' },
+    { timestamp: '2025-06-17T11:34:00Z', message: 'Face Detector progress: 60/100 batches processed.', level: 'info' },
+    { timestamp: '2025-06-17T11:34:05Z', message: 'Optical Flow is using high memory: 4.8GB. Monitoring performance.', level: 'warn' }
   ]
 };
