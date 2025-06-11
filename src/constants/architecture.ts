@@ -407,7 +407,6 @@ export const hilOutputProcessingHTML = `
 </body>
 </html>
 `;
-
 export const systemArchitecturePages = [
   { id: 'system', title: 'HIL System Architecture', html: hilSystemArchitecture },
   { id: 'create', title: 'HIL Create Task Service', html: hilCreateTaskHTML },

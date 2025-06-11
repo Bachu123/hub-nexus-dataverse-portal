@@ -16,6 +16,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { pipelineTemplates } from '@/constants/pipelines';
+
 import ArchitectureModal from '@/components/ArchitectureModal';
 import { pipelineArchitectures } from '@/constants/pipelineArchitectures';
 import { PipelineBuilder } from '@/components/PipelineBuilder';
