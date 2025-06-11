@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -26,7 +25,7 @@ const InfraHub = () => {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/infra-hub' },
     { id: 'hil-tasks', label: 'HIL Tasks', icon: Users, path: '/infra-hub/hil-tasks' },
     { id: 'pipeline-template', label: 'Pipeline Template', icon: GitBranch, path: '/infra-hub/pipelines' },
-    { id: 'ai-services', label: 'AI Services', icon: Settings, path: '/infra-hub/ai-services', disabled: true },
+    { id: 'ai-services', label: 'AI Services', icon: Settings, path: '/infra-hub/ai-services' },
   ];
 
   const isActive = (path: string) => {
@@ -85,19 +84,12 @@ const InfraHub = () => {
                 variant={isActive(item.path) ? "default" : "ghost"}
                 className={cn(
                   "w-full justify-start",
-                  !sidebarOpen && "justify-center px-2",
-                  item.disabled && "opacity-50 cursor-not-allowed"
+                  !sidebarOpen && "justify-center px-2"
                 )}
-                onClick={() => !item.disabled && navigate(item.path)}
-                disabled={item.disabled}
+                onClick={() => navigate(item.path)}
               >
                 <item.icon className={cn("w-4 h-4", sidebarOpen && "mr-2")} />
-                {sidebarOpen && (
-                  <>
-                    {item.label}
-                    {item.disabled && <Badge variant="secondary" className="ml-auto text-xs">Soon</Badge>}
-                  </>
-                )}
+                {sidebarOpen && item.label}
               </Button>
             ))}
           </div>
