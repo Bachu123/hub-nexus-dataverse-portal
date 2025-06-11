@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Database, FileText, Wrench, Brain } from "lucide-react";
+import { Database, FileText, Wrench, Brain, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
@@ -66,17 +66,17 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow duration-300">
+          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer" onClick={() => navigate("/infra-hub")}>
             <CardHeader className="text-center">
-              <Wrench className="w-12 h-12 mx-auto text-orange-600 mb-4" />
-              <CardTitle className="text-xl">Data Tools</CardTitle>
+              <Settings className="w-12 h-12 mx-auto text-orange-600 mb-4" />
+              <CardTitle className="text-xl">Infra Hub</CardTitle>
               <CardDescription>
-                Access powerful tools for data processing and analysis
+                Manage infrastructure, pipelines, and AI services
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full" variant="outline" disabled>
-                Coming Soon
+              <Button className="w-full" variant="outline">
+                Access Hub
               </Button>
             </CardContent>
           </Card>

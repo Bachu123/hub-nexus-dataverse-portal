@@ -10,6 +10,10 @@ import DatasetDetail from "./pages/DatasetDetail";
 import SelfServiceRequest from "./pages/SelfServiceRequest";
 import ModelCatalog from "./pages/ModelCatalog";
 import ModelDetail from "./pages/ModelDetail";
+import InfraHub from "./pages/InfraHub";
+import InfraHubDashboard from "./pages/InfraHubDashboard";
+import HILTasks from "./pages/HILTasks";
+import PipelineTemplate from "./pages/PipelineTemplate";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +31,11 @@ const App = () => (
           <Route path="/self-service-request" element={<SelfServiceRequest />} />
           <Route path="/model-catalog" element={<ModelCatalog />} />
           <Route path="/models/:id" element={<ModelDetail />} />
+          <Route path="/infra-hub" element={<InfraHub />}>
+            <Route index element={<InfraHubDashboard />} />
+            <Route path="hil-tasks" element={<HILTasks />} />
+            <Route path="pipelines" element={<PipelineTemplate />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
