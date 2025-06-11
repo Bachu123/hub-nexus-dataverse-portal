@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,6 +26,7 @@ const ModelDetail = () => {
   const [model, setModel] = useState(null);
   const [activeTab, setActiveTab] = useState('objective');
   const [showUseAsServiceModal, setShowUseAsServiceModal] = useState(false);
+  const [selectedTrainingRuns, setSelectedTrainingRuns] = useState<string[]>([]);
 
   const handleCreateAIService = (serviceData: any) => {
     // Add to AI Services via global function
@@ -32,6 +34,11 @@ const ModelDetail = () => {
       (window as any).addAIService(serviceData);
     }
     console.log('AI Service created from fine-tuned model:', serviceData);
+  };
+
+  const handleNewTraining = () => {
+    console.log('Opening new training dialog...');
+    // This would typically open a modal or navigate to a training setup page
   };
 
   useEffect(() => {
@@ -112,6 +119,9 @@ const ModelDetail = () => {
               <TabsContent value="training" className="mt-6">
                 <ModelTrainingTab 
                   model={model} 
+                  selectedTrainingRuns={selectedTrainingRuns}
+                  onTrainingRunsChange={setSelectedTrainingRuns}
+                  onNewTraining={handleNewTraining}
                   onFineTuningComplete={() => setShowUseAsServiceModal(true)}
                 />
               </TabsContent>
