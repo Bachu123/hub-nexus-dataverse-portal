@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,7 +13,7 @@ import {
   CheckCircle, 
   Clock,
   Download,
-  Refresh,
+  RefreshCw,
   MessageSquare,
   FileText,
   X,
@@ -434,7 +433,7 @@ const PipelineDetail = () => {
       {showDrawer && (
         <div className="fixed bottom-0 left-0 right-0 h-96 bg-white border-t border-slate-200 z-50">
           <div className="flex items-center justify-between p-4 border-b">
-            <Tabs value={drawerTab} onValueChange={setDrawerTab}>
+            <Tabs value={drawerTab} onValueChange={(value) => setDrawerTab(value as 'comments' | 'logs')}>
               <TabsList>
                 <TabsTrigger value="comments">Comments</TabsTrigger>
                 <TabsTrigger value="logs">Logs</TabsTrigger>
@@ -495,7 +494,7 @@ const PipelineDetail = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                     <Button variant="outline" size="sm">
-                      <Refresh className="w-4 h-4 mr-2" />
+                      <RefreshCw className="w-4 h-4 mr-2" />
                       Refresh
                     </Button>
                     {logType === 'console' && (
