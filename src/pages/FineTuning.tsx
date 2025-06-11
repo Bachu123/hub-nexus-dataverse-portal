@@ -9,8 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ChevronLeft, Database, Play, Settings } from 'lucide-react';
-import { datasets } from '@/data/datasets';
-import { getModelById } from '@/data/mockModels';
+import { datasets } from '@/constants/datasets';
+import { getModelById } from '@/constants/models';
 
 const FineTuning = () => {
   const { modelId } = useParams<{ modelId: string }>();

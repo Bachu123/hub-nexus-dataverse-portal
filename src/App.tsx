@@ -19,6 +19,8 @@ import PipelineDetail from "./pages/PipelineDetail";
 import AIServices from "./pages/AIServices";
 import ProjectManagement from "./pages/ProjectManagement";
 import NotFound from "./pages/NotFound";
+import Architecture from "./pages/Architecture";
+import { Link } from "react-router-dom";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +35,7 @@ const App = () => (
           <Route path="/data-marketplace" element={<DataMarketplace />} />
           <Route path="/dataset/:id" element={<DatasetDetail />} />
           <Route path="/self-service-request" element={<SelfServiceRequest />} />
+          <Route path="/architecture" element={<Architecture />} />
           <Route path="/model-catalog" element={<ModelCatalog />} />
           <Route path="/models/:id" element={<ModelDetail />} />
           <Route path="/infra-hub" element={<InfraHub />}>
@@ -44,6 +47,12 @@ const App = () => (
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <Link
+          to="/architecture"
+          className="fixed bottom-4 right-4 bg-purple-600 text-white px-4 py-2 rounded shadow hover:bg-purple-700"
+        >
+          View Architecture
+        </Link>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
