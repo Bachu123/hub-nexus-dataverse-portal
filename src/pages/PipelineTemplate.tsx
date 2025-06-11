@@ -16,57 +16,62 @@ import {
   Edit,
   Trash2
 } from 'lucide-react';
+import { mockPipelines } from '@/data/pipelineData';
 
 const PipelineTemplate = () => {
   const navigate = useNavigate();
   
-  const statusCounts = {
-    approved: 12,
-    submitted: 5,
-    rejected: 2,
-    success: 45,
-    failed: 3,
-    initiated: 8
-  };
+  // Convert mock data to array format
+  const pipelines = Object.values(mockPipelines).map(pipeline => ({
+    id: pipeline.id,
+    name: pipeline.name,
+    description: pipeline.description,
+    status: 'approved' as const,
+    version: 'v2.1',
+    lastExecution: pipeline.lastExecutionTime,
+    executionStatus: pipeline.lastExecutionStatus
+  }));
 
-  const pipelines = [
-    {
-      id: "pip-001",
-      name: "Customer Data Processing",
-      description: "Process and validate customer data through ML pipeline",
-      status: "approved",
-      version: "v2.1",
-      lastExecution: "2024-06-15 14:30",
-      executionStatus: "success"
-    },
+  // Add some additional mock pipelines for demonstration
+  const allPipelines = [
+    ...pipelines,
     {
       id: "pip-002", 
       name: "Fraud Detection Model",
       description: "Real-time fraud detection using ensemble methods",
-      status: "submitted",
+      status: "submitted" as const,
       version: "v1.8",
       lastExecution: "2024-06-15 12:15",
-      executionStatus: "failed"
+      executionStatus: "failed" as const
     },
     {
       id: "pip-003",
       name: "Document Classification",
       description: "Automated document classification and routing",
-      status: "approved",
+      status: "approved" as const,
       version: "v3.0",
       lastExecution: "2024-06-15 16:45",
-      executionStatus: "success"
+      executionStatus: "success" as const
     },
     {
       id: "pip-004",
       name: "Sentiment Analysis",
       description: "Multi-language sentiment analysis pipeline",
-      status: "rejected",
+      status: "rejected" as const,
       version: "v1.2",
       lastExecution: "2024-06-14 09:20",
-      executionStatus: "failed"
+      executionStatus: "failed" as const
     }
   ];
+  
+  const statusCounts = {
+    approved: allPipelines.filter(p => p.status === 'approved').length,
+    submitted: allPipelines.filter(p => p.status === 'submitted').length,
+    rejected: allPipelines.filter(p => p.status === 'rejected').length,
+    success: allPipelines.filter(p => p.executionStatus === 'success').length,
+    failed: allPipelines.filter(p => p.executionStatus === 'failed').length,
+    initiated: 8
+  };
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
@@ -177,7 +182,7 @@ const PipelineTemplate = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {pipelines.map((pipeline) => (
+              {allPipelines.map((pipeline) => (
                 <TableRow 
                   key={pipeline.id}
                   className="cursor-pointer hover:bg-slate-50"

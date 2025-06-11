@@ -14,6 +14,7 @@ import InfraHub from "./pages/InfraHub";
 import InfraHubDashboard from "./pages/InfraHubDashboard";
 import HILTasks from "./pages/HILTasks";
 import PipelineTemplate from "./pages/PipelineTemplate";
+import PipelineDetail from "./pages/PipelineDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
             <Route index element={<InfraHubDashboard />} />
             <Route path="hil-tasks" element={<HILTasks />} />
             <Route path="pipelines" element={<PipelineTemplate />} />
+            <Route path="pipelines/:id" element={<PipelineDetail />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
