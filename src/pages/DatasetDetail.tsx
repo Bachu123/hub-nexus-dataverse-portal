@@ -197,6 +197,7 @@ const DatasetDetail = () => {
                   {filteredFiles.map((file) => (
                     <ExpandableFileRow
                       key={file.id}
+                      datasetId={dataset.id}
                       file={file}
                       hilTasks={dataset.hilTasks}
                       onPreview={handlePreviewFile}

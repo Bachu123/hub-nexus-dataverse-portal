@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { ChevronLeft, Plus, FileCode, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,17 +12,22 @@ import XMLPreviewDialog from "@/components/XMLPreviewDialog";
 import { useToast } from "@/components/ui/use-toast";
 
 const SelfServiceRequest = () => {
+  const [searchParams] = useSearchParams();
+  const datasetId = searchParams.get("dataset") || "hav-df";
+  const defaultFile = searchParams.get("fileId") || "";
+
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedUseCase, setSelectedUseCase] = useState("Computer Vision");
   const [selectedTemplate, setSelectedTemplate] = useState("");
-  const [selectedFile, setSelectedFile] = useState("");
+  const [selectedFile, setSelectedFile] = useState(defaultFile);
   const [showXMLEditor, setShowXMLEditor] = useState(false);
   const [xmlData, setXmlData] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const { toast } = useToast();
 
-  const dataset = datasets["hav-df"];
+  const dataset = datasets[datasetId];
+  const selectedFileInfo = dataset.files.find((f) => f.id === selectedFile);
 
   const useCases = [
     "Computer Vision",
@@ -71,17 +77,18 @@ const SelfServiceRequest = () => {
     if (!taskName || !selectedFile) {
       toast({
         title: "Missing Information",
-        description: "Please fill in task name and select a file",
+        description: "Please fill in task name. No target file selected.",
         variant: "destructive"
       });
       return;
     }
-    
+
     // In a real app, this would create a new HIL task
     console.log("Creating new HIL task:", {
       taskName,
       description,
       fileId: selectedFile,
+      datasetId,
       useCase: selectedUseCase,
       template: selectedTemplate
     });
@@ -89,7 +96,6 @@ const SelfServiceRequest = () => {
     // Reset form
     setTaskName("");
     setDescription("");
-    setSelectedFile("");
     
     toast({
       title: "Task Created",
@@ -113,7 +119,7 @@ const SelfServiceRequest = () => {
       <header className="bg-white border-b border-slate-200 px-6 py-4">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center space-x-4">
-            <Link to="/dataset/hav-df" className="flex items-center text-purple-600 hover:text-purple-700">
+            <Link to={`/dataset/${datasetId}`} className="flex items-center text-purple-600 hover:text-purple-700">
               <ChevronLeft className="w-5 h-5 mr-1" />
               Back
             </Link>
@@ -184,6 +190,13 @@ const SelfServiceRequest = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Target File</label>
+
+              <div className="p-2 border border-slate-300 rounded-md bg-slate-50">
+                {selectedFileInfo
+                  ? `${selectedFileInfo.name} (${selectedFileInfo.format})`
+                  : "No file selected"}
+              </div>
+
               <select
                 className="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 value={selectedFile}
@@ -197,6 +210,7 @@ const SelfServiceRequest = () => {
                   </option>
                 ))}
               </select>
+
             </div>
           </div>
 
@@ -284,7 +298,7 @@ const SelfServiceRequest = () => {
             <div>
               <h4 className="font-medium text-slate-900 mb-3">Standard Form</h4>
               <div className="space-y-3 text-slate-600">
-                <p>1. <strong>Select a target file</strong> from the dataset that you want to create a HIL task for.</p>
+                <p>1. The target file you selected in the dataset page will be used automatically.</p>
                 <p>2. <strong>Choose your use case</strong> from the available options to match your annotation needs.</p>
                 <p>3. <strong>Pick a template</strong> that best fits your data annotation requirements.</p>
                 <p>4. <strong>Provide task details</strong> including name and description for clear task identification.</p>
