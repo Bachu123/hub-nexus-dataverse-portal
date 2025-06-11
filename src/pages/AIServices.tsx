@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -200,6 +199,18 @@ const AIServices = () => {
       setTestingService(null);
     }, 2000);
   };
+
+  const handleAddFineTunedService = (serviceData: any) => {
+    setServices(prev => [...prev, serviceData]);
+  };
+
+  // Make this function available globally for other components to use
+  React.useEffect(() => {
+    (window as any).addAIService = handleAddFineTunedService;
+    return () => {
+      delete (window as any).addAIService;
+    };
+  }, []);
 
   return (
     <div className="space-y-6">

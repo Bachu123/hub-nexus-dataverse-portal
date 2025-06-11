@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -25,15 +24,20 @@ interface ModelTrainingTabProps {
   selectedTrainingRuns: string[];
   onTrainingRunsChange: (runs: string[]) => void;
   onNewTraining: () => void;
+  onFineTuningComplete?: () => void;
 }
 
 export const ModelTrainingTab = ({ 
   model, 
   selectedTrainingRuns, 
   onTrainingRunsChange, 
-  onNewTraining 
+  onNewTraining, 
+  onFineTuningComplete 
 }: ModelTrainingTabProps) => {
   const [expandedRuns, setExpandedRuns] = useState<string[]>([]);
+  const [isTraining, setIsTraining] = useState(false);
+  const [trainingComplete, setTrainingComplete] = useState(false);
+  const [trainingProgress, setTrainingProgress] = useState(0);
 
   const mockTrainingRuns: TrainingRun[] = [
     {
@@ -86,6 +90,32 @@ export const ModelTrainingTab = ({
       failed: 'destructive'
     };
     return <Badge variant={variants[status] as any}>{status}</Badge>;
+  };
+
+  const handleFineTuningComplete = () => {
+    setIsTraining(false);
+    setTrainingComplete(true);
+    if (onFineTuningComplete) {
+      onFineTuningComplete();
+    }
+  };
+
+  const startTraining = () => {
+    setIsTraining(true);
+    setTrainingComplete(false);
+    setTrainingProgress(0);
+    
+    // Simulate training progress
+    const interval = setInterval(() => {
+      setTrainingProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          handleFineTuningComplete();
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 500);
   };
 
   return (

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,9 +16,11 @@ import {
   Trash2
 } from 'lucide-react';
 import { mockPipelines } from '@/data/pipelineData';
+import { PipelineBuilder } from '@/components/PipelineBuilder';
 
 const PipelineTemplate = () => {
   const navigate = useNavigate();
+  const [showPipelineBuilder, setShowPipelineBuilder] = useState(false);
   
   // Convert mock data to array format
   const pipelines = Object.values(mockPipelines).map(pipeline => ({
@@ -106,11 +107,20 @@ const PipelineTemplate = () => {
     console.log(`Delete pipeline ${pipelineId}`);
   };
 
+  const handleCreatePipeline = (pipelineData: any) => {
+    console.log('New pipeline created:', pipelineData);
+    // Here you would typically save to backend
+    // For now, just log and show success
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-slate-900">Pipeline Templates</h1>
-        <Button className="bg-purple-600 hover:bg-purple-700">
+        <Button 
+          className="bg-purple-600 hover:bg-purple-700"
+          onClick={() => setShowPipelineBuilder(true)}
+        >
           <Plus className="w-4 h-4 mr-2" />
           Create Template
         </Button>
@@ -237,6 +247,13 @@ const PipelineTemplate = () => {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Pipeline Builder Modal */}
+      <PipelineBuilder
+        open={showPipelineBuilder}
+        onClose={() => setShowPipelineBuilder(false)}
+        onSave={handleCreatePipeline}
+      />
     </div>
   );
 };
