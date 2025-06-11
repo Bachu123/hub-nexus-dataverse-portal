@@ -9,7 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { datasets } from '@/data/datasets';
+import { datasets } from '@/constants/datasets';
 
 interface NewTrainingDrawerProps {
   isOpen: boolean;

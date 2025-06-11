@@ -19,15 +19,20 @@ import PipelineDetail from "./pages/PipelineDetail";
 import AIServices from "./pages/AIServices";
 import ProjectManagement from "./pages/ProjectManagement";
 import NotFound from "./pages/NotFound";
+import { useState } from "react";
+import ArchitectureModal from "./components/ArchitectureModal";
+import { systemArchitecturePages } from "@/constants/architecture";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+const App = () => {
+  const [showArch, setShowArch] = useState(false);
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/data-marketplace" element={<DataMarketplace />} />
@@ -44,9 +49,17 @@ const App = () => (
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <button
+          onClick={() => setShowArch(true)}
+          className="fixed bottom-4 right-4 bg-purple-600 text-white px-4 py-2 rounded shadow hover:bg-purple-700"
+        >
+          View Architecture
+        </button>
+        <ArchitectureModal pages={systemArchitecturePages} open={showArch} onOpenChange={setShowArch} />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
