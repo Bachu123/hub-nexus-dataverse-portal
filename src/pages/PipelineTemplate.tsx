@@ -16,11 +16,16 @@ import {
   Trash2
 } from 'lucide-react';
 import { pipelineTemplates } from '@/constants/pipelines';
+
+import ArchitectureModal from '@/components/ArchitectureModal';
+import { pipelineArchitectures } from '@/constants/pipelineArchitectures';
 import { PipelineBuilder } from '@/components/PipelineBuilder';
 
 const PipelineTemplate = () => {
   const navigate = useNavigate();
   const [showPipelineBuilder, setShowPipelineBuilder] = useState(false);
+  const [archPages, setArchPages] = useState<Array<{ id: string; title: string; html: string }> | null>(null);
+  const [showArch, setShowArch] = useState(false);
   
   // Load templates from constants
   const pipelines = Object.values(pipelineTemplates).map(pipeline => ({
@@ -74,6 +79,14 @@ const PipelineTemplate = () => {
 
   const handleDelete = (pipelineId: string) => {
     console.log(`Delete pipeline ${pipelineId}`);
+  };
+
+  const handleViewArchitecture = (pipelineId: string) => {
+    const pages = pipelineArchitectures[pipelineId];
+    if (pages) {
+      setArchPages(pages);
+      setShowArch(true);
+    }
   };
 
   const handleCreatePipeline = (pipelineData: any) => {
@@ -192,6 +205,13 @@ const PipelineTemplate = () => {
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={(e) => {
                           e.stopPropagation();
+                          handleViewArchitecture(pipeline.id);
+                        }}>
+                          <Eye className="w-4 h-4 mr-2" />
+                          Architecture
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => {
+                          e.stopPropagation();
                           handleEdit(pipeline.id);
                         }}>
                           <Edit className="w-4 h-4 mr-2" />
@@ -223,6 +243,9 @@ const PipelineTemplate = () => {
         onClose={() => setShowPipelineBuilder(false)}
         onSave={handleCreatePipeline}
       />
+      {archPages && (
+        <ArchitectureModal pages={archPages} open={showArch} onOpenChange={setShowArch} />
+      )}
     </div>
   );
 };
