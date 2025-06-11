@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
-  Dashboard, 
+  LayoutDashboard, 
   Users, 
   GitBranch, 
   Settings, 
@@ -23,7 +23,7 @@ const InfraHub = () => {
   const location = useLocation();
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Dashboard, path: '/infra-hub' },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/infra-hub' },
     { id: 'hil-tasks', label: 'HIL Tasks', icon: Users, path: '/infra-hub/hil-tasks' },
     { id: 'pipeline-template', label: 'Pipeline Template', icon: GitBranch, path: '/infra-hub/pipelines' },
     { id: 'ai-services', label: 'AI Services', icon: Settings, path: '/infra-hub/ai-services', disabled: true },
