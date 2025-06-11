@@ -15,15 +15,19 @@ import {
   Edit,
   Trash2
 } from 'lucide-react';
-import { mockPipelines } from '@/data/pipelineData';
+import { pipelineTemplates } from '@/constants/pipelines';
+import ArchitectureModal from '@/components/ArchitectureModal';
+import { pipelineArchitectures } from '@/constants/pipelineArchitectures';
 import { PipelineBuilder } from '@/components/PipelineBuilder';
 
 const PipelineTemplate = () => {
   const navigate = useNavigate();
   const [showPipelineBuilder, setShowPipelineBuilder] = useState(false);
+  const [archPages, setArchPages] = useState<Array<{ id: string; title: string; html: string }> | null>(null);
+  const [showArch, setShowArch] = useState(false);
   
-  // Convert mock data to array format
-  const pipelines = Object.values(mockPipelines).map(pipeline => ({
+  // Load templates from constants
+  const pipelines = Object.values(pipelineTemplates).map(pipeline => ({
     id: pipeline.id,
     name: pipeline.name,
     description: pipeline.description,
@@ -32,38 +36,7 @@ const PipelineTemplate = () => {
     lastExecution: pipeline.lastExecutionTime,
     executionStatus: pipeline.lastExecutionStatus
   }));
-
-  // Add some additional mock pipelines for demonstration
-  const allPipelines = [
-    ...pipelines,
-    {
-      id: "pip-002", 
-      name: "Fraud Detection Model",
-      description: "Real-time fraud detection using ensemble methods",
-      status: "submitted" as const,
-      version: "v1.8",
-      lastExecution: "2024-06-15 12:15",
-      executionStatus: "failed" as const
-    },
-    {
-      id: "pip-003",
-      name: "Document Classification",
-      description: "Automated document classification and routing",
-      status: "approved" as const,
-      version: "v3.0",
-      lastExecution: "2024-06-15 16:45",
-      executionStatus: "success" as const
-    },
-    {
-      id: "pip-004",
-      name: "Sentiment Analysis",
-      description: "Multi-language sentiment analysis pipeline",
-      status: "rejected" as const,
-      version: "v1.2",
-      lastExecution: "2024-06-14 09:20",
-      executionStatus: "failed" as const
-    }
-  ];
+  const allPipelines = pipelines;
   
   const statusCounts = {
     approved: allPipelines.filter(p => p.status === 'approved').length,
@@ -105,6 +78,14 @@ const PipelineTemplate = () => {
 
   const handleDelete = (pipelineId: string) => {
     console.log(`Delete pipeline ${pipelineId}`);
+  };
+
+  const handleViewArchitecture = (pipelineId: string) => {
+    const pages = pipelineArchitectures[pipelineId];
+    if (pages) {
+      setArchPages(pages);
+      setShowArch(true);
+    }
   };
 
   const handleCreatePipeline = (pipelineData: any) => {
@@ -223,6 +204,13 @@ const PipelineTemplate = () => {
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={(e) => {
                           e.stopPropagation();
+                          handleViewArchitecture(pipeline.id);
+                        }}>
+                          <Eye className="w-4 h-4 mr-2" />
+                          Architecture
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => {
+                          e.stopPropagation();
                           handleEdit(pipeline.id);
                         }}>
                           <Edit className="w-4 h-4 mr-2" />
@@ -254,6 +242,9 @@ const PipelineTemplate = () => {
         onClose={() => setShowPipelineBuilder(false)}
         onSave={handleCreatePipeline}
       />
+      {archPages && (
+        <ArchitectureModal pages={archPages} open={showArch} onOpenChange={setShowArch} />
+      )}
     </div>
   );
 };

@@ -1,20 +1,22 @@
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { ChevronDown, ChevronRight, FileText, Clock, CheckCircle, AlertCircle, Users, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DatasetFile, HILTask } from "@/data/datasets";
+import { DatasetFile, HILTask } from "@/constants/datasets";
 
 interface ExpandableFileRowProps {
+  datasetId: string;
   file: DatasetFile;
   hilTasks: HILTask[];
   onPreview: (file: DatasetFile) => void;
 }
 
-const ExpandableFileRow = ({ file, hilTasks, onPreview }: ExpandableFileRowProps) => {
+const ExpandableFileRow = ({ datasetId, file, hilTasks, onPreview }: ExpandableFileRowProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
 
@@ -140,8 +142,8 @@ const ExpandableFileRow = ({ file, hilTasks, onPreview }: ExpandableFileRowProps
         </td>
         <td className="p-4">
           <div className="flex items-center space-x-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               onClick={() => onPreview(file)}
             >
@@ -154,6 +156,14 @@ const ExpandableFileRow = ({ file, hilTasks, onPreview }: ExpandableFileRowProps
                 Report
               </Button>
             )}
+            <Link
+              to={`/self-service-request?dataset=${datasetId}&fileId=${file.id}`}
+              className="inline-flex"
+            >
+              <Button variant="outline" size="sm" className="ml-1">
+                Request
+              </Button>
+            </Link>
           </div>
         </td>
       </tr>

@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   ArrowLeft, 
@@ -22,7 +23,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { mockPipelines, mockLogs, AIService, Pipeline } from '@/data/pipelineData';
+import { pipelineTemplates, pipelineLogs, AIService, Pipeline } from '@/constants/pipelines';
 
 const PipelineDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -36,11 +37,13 @@ const PipelineDetail = () => {
   const [logType, setLogType] = useState<'verbose' | 'console'>('verbose');
   const [logs, setLogs] = useState<Array<{ timestamp: string; message: string; level: string }>>([]);
   const [expandedExecution, setExpandedExecution] = useState<string | null>(null);
+  const [testInput, setTestInput] = useState('{\n  "sample": true\n}');
+  const [testOutput, setTestOutput] = useState<string | null>(null);
 
   useEffect(() => {
-    if (id && mockPipelines[id]) {
-      setPipeline(mockPipelines[id]);
-      setLogs(mockLogs[id] || []);
+    if (id && pipelineTemplates[id]) {
+      setPipeline(pipelineTemplates[id]);
+      setLogs(pipelineLogs[id] || []);
     }
   }, [id]);
 
@@ -85,6 +88,19 @@ const PipelineDetail = () => {
       pending: 'bg-gray-100 text-gray-800'
     };
     return config[status] || config.pending;
+  };
+
+  const handleTestPipeline = () => {
+    try {
+      const input = JSON.parse(testInput);
+      const result = {
+        message: `Executed pipeline ${pipeline?.name}`,
+        input
+      };
+      setTestOutput(JSON.stringify(result, null, 2));
+    } catch (err) {
+      setTestOutput('Invalid JSON');
+    }
   };
 
   const renderPipelineGraph = () => (
@@ -423,8 +439,22 @@ const PipelineDetail = () => {
         </TabsContent>
 
         <TabsContent value="test-hil">
-          <div className="text-center py-8 text-slate-600">
-            Test / HIL functionality coming soon...
+          <div className="space-y-4 max-w-xl mx-auto py-8">
+            <Textarea
+              value={testInput}
+              onChange={(e) => setTestInput(e.target.value)}
+              className="h-32"
+            />
+            <div className="flex justify-end">
+              <Button onClick={handleTestPipeline} className="bg-purple-600 hover:bg-purple-700 text-white">
+                Test Pipeline
+              </Button>
+            </div>
+            {testOutput && (
+              <pre className="bg-slate-100 p-4 rounded-md text-sm whitespace-pre-wrap">
+{testOutput}
+              </pre>
+            )}
           </div>
         </TabsContent>
       </Tabs>

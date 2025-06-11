@@ -2,7 +2,7 @@
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Users, Clock, CheckCircle, AlertCircle } from "lucide-react";
-import { HILTask } from "@/data/datasets";
+import { HILTask } from "@/constants/datasets";
 
 interface HILStatusBarProps {
   hilTasks: HILTask[];
