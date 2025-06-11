@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -34,6 +35,7 @@ export const ModelTrainingTab = ({
   onNewTraining, 
   onFineTuningComplete 
 }: ModelTrainingTabProps) => {
+  const navigate = useNavigate();
   const [expandedRuns, setExpandedRuns] = useState<string[]>([]);
   const [isTraining, setIsTraining] = useState(false);
   const [trainingComplete, setTrainingComplete] = useState(false);
@@ -122,9 +124,17 @@ export const ModelTrainingTab = ({
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Training Runs</CardTitle>
-        <Button onClick={onNewTraining}>
-          + New Training
-        </Button>
+        <div className="flex space-x-2">
+          <Button 
+            variant="outline"
+            onClick={() => navigate(`/models/${model.id}/fine-tune`)}
+          >
+            Fine-tune Model
+          </Button>
+          <Button onClick={onNewTraining}>
+            + New Training
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">

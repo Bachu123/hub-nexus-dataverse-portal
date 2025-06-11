@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -11,9 +12,11 @@ import {
   Menu, 
   X, 
   Download,
-  ChevronLeft
+  ChevronLeft,
+  FolderOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { WorkspaceSelector } from '@/components/WorkspaceSelector';
 
 const InfraHub = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -23,6 +26,7 @@ const InfraHub = () => {
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/infra-hub' },
+    { id: 'projects', label: 'Projects', icon: FolderOpen, path: '/infra-hub/projects' },
     { id: 'hil-tasks', label: 'HIL Tasks', icon: Users, path: '/infra-hub/hil-tasks' },
     { id: 'pipeline-template', label: 'Pipeline Template', icon: GitBranch, path: '/infra-hub/pipelines' },
     { id: 'ai-services', label: 'AI Services', icon: Settings, path: '/infra-hub/ai-services' },
@@ -100,22 +104,25 @@ const InfraHub = () => {
       <div className="flex-1 flex flex-col">
         {/* Top Bar */}
         <header className="bg-white border-b border-slate-200 px-6 py-4">
-          <div className="flex items-center justify-end space-x-4">
-            <Select value={period} onValueChange={setPeriod}>
-              <SelectTrigger className="w-32">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="hourly">Hourly</SelectItem>
-                <SelectItem value="daily">Daily</SelectItem>
-                <SelectItem value="weekly">Weekly</SelectItem>
-                <SelectItem value="monthly">Monthly</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" onClick={handleExport}>
-              <Download className="w-4 h-4 mr-2" />
-              Export
-            </Button>
+          <div className="flex items-center justify-between">
+            <WorkspaceSelector />
+            <div className="flex items-center space-x-4">
+              <Select value={period} onValueChange={setPeriod}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="hourly">Hourly</SelectItem>
+                  <SelectItem value="daily">Daily</SelectItem>
+                  <SelectItem value="weekly">Weekly</SelectItem>
+                  <SelectItem value="monthly">Monthly</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button variant="outline" onClick={handleExport}>
+                <Download className="w-4 h-4 mr-2" />
+                Export
+              </Button>
+            </div>
           </div>
         </header>
 

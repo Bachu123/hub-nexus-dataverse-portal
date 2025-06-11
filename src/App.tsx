@@ -10,12 +10,14 @@ import DatasetDetail from "./pages/DatasetDetail";
 import SelfServiceRequest from "./pages/SelfServiceRequest";
 import ModelCatalog from "./pages/ModelCatalog";
 import ModelDetail from "./pages/ModelDetail";
+import FineTuning from "./pages/FineTuning";
 import InfraHub from "./pages/InfraHub";
 import InfraHubDashboard from "./pages/InfraHubDashboard";
 import HILTasks from "./pages/HILTasks";
 import PipelineTemplate from "./pages/PipelineTemplate";
 import PipelineDetail from "./pages/PipelineDetail";
 import AIServices from "./pages/AIServices";
+import ProjectManagement from "./pages/ProjectManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
