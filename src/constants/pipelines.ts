@@ -5,9 +5,9 @@ export interface AIService {
   executedBy: string;
   startTime: string;
   endTime?: string;
-  executionTime: number;
+  executionTime: number; // in seconds
   processedRecords: number;
-  latency: number;
+  latency: number; // in ms
   memoryPeak: string;
   input: any;
   output: any;
@@ -52,52 +52,109 @@ export const pipelineTemplates: Record<string, Pipeline> = {
     name: 'Red Teaming',
     description: 'Detect policy violations by prompting a model with adversarial inputs.',
     lastExecutionStatus: 'success',
-    lastExecutionTime: '2024-06-15 10:00',
+    lastExecutionTime: '2025-06-15 10:05',
     availableFiles: 20,
     processedFiles: 20,
     remainingFiles: 0,
     aiServices: [
       {
-        id: 'prompt-generator',
-        name: 'Prompt Generator',
+        id: 'policy-preparation',
+        name: 'Policy Preparation',
         status: 'success',
         executedBy: 'system',
-        startTime: 'Jun 2, 2025, 09:00:00 AM',
-        endTime: 'Jun 2, 2025, 09:00:01 AM',
-        executionTime: 1,
-        processedRecords: 10,
-        latency: 100,
+        startTime: 'Jun 15, 2025, 10:00:00 AM',
+        endTime: 'Jun 15, 2025, 10:00:05 AM',
+        executionTime: 5,
+        processedRecords: 1,
+        latency: 50,
+        memoryPeak: '256MB',
+        input: { categories: ['safety', 'privacy'], policies: 3 },
+        output: { policyIds: [1, 2, 3] }
+      },
+      {
+        id: 'prompt-generation',
+        name: 'Jailbreak Prompt Generation',
+        status: 'success',
+        executedBy: 'system',
+        startTime: 'Jun 15, 2025, 10:00:05 AM',
+        endTime: 'Jun 15, 2025, 10:00:07 AM',
+        executionTime: 2,
+        processedRecords: 15,
+        latency: 120,
         memoryPeak: '512MB',
         input: { seed: 'adversarial prompt' },
-        output: { prompts: ['attack 1', 'attack 2'] }
+        output: { prompts: ['p1', 'p2', '...'] }
       },
       {
-        id: 'llm-response',
-        name: 'LLM Response',
+        id: 'store-prompts',
+        name: 'Store Prompts to DB',
         status: 'success',
         executedBy: 'system',
-        startTime: 'Jun 2, 2025, 09:00:01 AM',
-        endTime: 'Jun 2, 2025, 09:00:03 AM',
-        executionTime: 2,
-        processedRecords: 10,
-        latency: 200,
-        memoryPeak: '1GB',
-        input: { model: 'gpt-4', prompts: ['attack 1', 'attack 2'] },
-        output: { responses: ['resp1', 'resp2'] }
-      },
-      {
-        id: 'toxicity-check',
-        name: 'Toxicity Check',
-        status: 'success',
-        executedBy: 'system',
-        startTime: 'Jun 2, 2025, 09:00:03 AM',
-        endTime: 'Jun 2, 2025, 09:00:04 AM',
+        startTime: 'Jun 15, 2025, 10:00:07 AM',
+        endTime: 'Jun 15, 2025, 10:00:08 AM',
         executionTime: 1,
-        processedRecords: 10,
-        latency: 100,
+        processedRecords: 15,
+        latency: 80,
+        memoryPeak: '128MB',
+        input: { prompts: 15 },
+        output: { stored: 15 }
+      },
+      {
+        id: 'prompt-review',
+        name: 'Prompt Review (HIL)',
+        status: 'success',
+        executedBy: 'human-reviewer@company.com',
+        startTime: 'Jun 15, 2025, 10:00:08 AM',
+        endTime: 'Jun 15, 2025, 10:05:00 AM',
+        executionTime: 292,
+        processedRecords: 15,
+        latency: 0,
+        memoryPeak: 'N/A',
+        input: { prompts: 15 },
+        output: { approved: 14, rejected: 1 },
+        hilData: { sent: 15, received: 15, pending: 0 }
+      },
+      {
+        id: 'evaluation',
+        name: 'Red Teaming Evaluation',
+        status: 'success',
+        executedBy: 'system',
+        startTime: 'Jun 15, 2025, 10:05:00 AM',
+        endTime: 'Jun 15, 2025, 10:05:03 AM',
+        executionTime: 3,
+        processedRecords: 14,
+        latency: 150,
+        memoryPeak: '1GB',
+        input: { prompts: 14 },
+        output: { responses: 14 }
+      },
+      {
+        id: 'violation-check',
+        name: 'Violation Check',
+        status: 'success',
+        executedBy: 'system',
+        startTime: 'Jun 15, 2025, 10:05:03 AM',
+        endTime: 'Jun 15, 2025, 10:05:04 AM',
+        executionTime: 1,
+        processedRecords: 14,
+        latency: 60,
         memoryPeak: '256MB',
-        input: { text: ['resp1', 'resp2'] },
-        output: { toxic: [false, true] }
+        input: { responses: 14 },
+        output: { violations: 2 }
+      },
+      {
+        id: 'fine-tune',
+        name: 'Model Fine-Tuning',
+        status: 'pending',
+        executedBy: 'system',
+        startTime: '',
+        endTime: '',
+        executionTime: 0,
+        processedRecords: 0,
+        latency: 0,
+        memoryPeak: 'N/A',
+        input: { violations: 2 },
+        output: null
       }
     ],
     executions: [
@@ -105,8 +162,8 @@ export const pipelineTemplates: Record<string, Pipeline> = {
         id: 'exec-100',
         type: 'Manual',
         executedBy: 'tester@company.com',
-        startDate: '2024-06-15 10:00:00',
-        endDate: '2024-06-15 10:00:05',
+        startDate: '2025-06-15 10:00:00',
+        endDate: '2025-06-15 10:05:05',
         status: 'success',
         records: []
       }
@@ -116,8 +173,8 @@ export const pipelineTemplates: Record<string, Pipeline> = {
     id: 'deepfake-detection',
     name: 'Deepfake Detection',
     description: 'Identify manipulated media files in a dataset.',
-    lastExecutionStatus: 'running',
-    lastExecutionTime: '2024-06-16 09:45',
+    lastExecutionStatus: 'failed',
+    lastExecutionTime: '2025-06-16 09:45',
     availableFiles: 100,
     processedFiles: 40,
     remainingFiles: 60,
@@ -127,27 +184,29 @@ export const pipelineTemplates: Record<string, Pipeline> = {
         name: 'Frame Extraction',
         status: 'success',
         executedBy: 'system',
-        startTime: 'Jun 2, 2025, 11:00:00 AM',
-        endTime: 'Jun 2, 2025, 11:00:02 AM',
-        executionTime: 2,
+        startTime: 'Jun 16, 2025, 09:45:00 AM',
+        endTime: 'Jun 16, 2025, 09:48:22 AM',
+        executionTime: 202,
         processedRecords: 40,
-        latency: 200,
+        latency: 5050, // avg latency per record
         memoryPeak: '2GB',
-        input: { video: 'input.mp4' },
-        output: { frames: 100 }
+        input: { videoFiles: 40 },
+        output: { frameBatches: 40 }
       },
       {
         id: 'deepfake-classifier',
         name: 'Deepfake Classifier',
-        status: 'running',
+        status: 'failed',
         executedBy: 'system',
-        startTime: 'Jun 2, 2025, 11:00:02 AM',
-        executionTime: 0,
-        processedRecords: 0,
-        latency: 0,
-        memoryPeak: '0GB',
-        input: { frames: 100 },
-        output: null
+        startTime: 'Jun 16, 2025, 09:48:22 AM',
+        endTime: 'Jun 16, 2025, 09:52:30 AM',
+        executionTime: 248,
+        processedRecords: 22, // Failed after processing 22 out of 40 records
+        latency: 11272,
+        memoryPeak: '8GB',
+        input: { frameBatches: 40 },
+        output: null,
+        errorMessage: 'Classifier failed: CUDA out of memory. Tried to allocate 3.25 GiB.'
       },
       {
         id: 'reporting',
@@ -155,10 +214,11 @@ export const pipelineTemplates: Record<string, Pipeline> = {
         status: 'pending',
         executedBy: 'system',
         startTime: '',
+        endTime: '',
         executionTime: 0,
         processedRecords: 0,
         latency: 0,
-        memoryPeak: '0GB',
+        memoryPeak: 'N/A',
         input: {},
         output: null
       }
@@ -168,9 +228,9 @@ export const pipelineTemplates: Record<string, Pipeline> = {
         id: 'exec-200',
         type: 'Scheduler',
         executedBy: 'system',
-        startDate: '2024-06-16 09:45:00',
-        endDate: '',
-        status: 'running',
+        startDate: '2025-06-16 09:45:00',
+        endDate: '2025-06-16 09:52:31',
+        status: 'failed',
         records: []
       }
     ]
@@ -179,12 +239,27 @@ export const pipelineTemplates: Record<string, Pipeline> = {
 
 export const pipelineLogs: Record<string, Array<{ timestamp: string; message: string; level: 'info' | 'error' | 'warn' }>> = {
   'red-teaming': [
-    { timestamp: '2024-06-15T10:00:01Z', message: 'Prompt generator executed', level: 'info' },
-    { timestamp: '2024-06-15T10:00:03Z', message: 'LLM produced responses', level: 'info' },
-    { timestamp: '2024-06-15T10:00:04Z', message: 'Toxicity check completed', level: 'info' }
+    { timestamp: '2025-06-15T10:00:00Z', message: 'Manual execution of Red Teaming pipeline initiated by tester@company.com.', level: 'info' },
+    { timestamp: '2025-06-15T10:00:01Z', message: 'Policy Preparation started. Reading 3 policy documents.', level: 'info' },
+    { timestamp: '2025-06-15T10:00:05Z', message: 'Policy Preparation successful.', level: 'info' },
+    { timestamp: '2025-06-15T10:00:06Z', message: 'Generating 15 jailbreak prompts.', level: 'info' },
+    { timestamp: '2025-06-15T10:00:07Z', message: 'Prompts generated. Storing to database.', level: 'info' },
+    { timestamp: '2025-06-15T10:00:08Z', message: 'Prompts stored. Sending 15 prompts for Human-in-the-Loop review.', level: 'info' },
+    { timestamp: '2025-06-15T10:00:09Z', message: 'Awaiting HIL review. This may take some time.', level: 'warn' },
+    { timestamp: '2025-06-15T10:05:00Z', message: 'HIL review completed by human-reviewer@company.com. Approved: 14, Rejected: 1.', level: 'info' },
+    { timestamp: '2025-06-15T10:05:01Z', message: 'Starting evaluation for 14 approved prompts.', level: 'info' },
+    { timestamp: '2025-06-15T10:05:03Z', message: 'Evaluation API call successful.', level: 'info' },
+    { timestamp: '2025-06-15T10:05:04Z', message: 'Violation check completed. 2 violations flagged.', level: 'info' },
+    { timestamp: '2025-06-15T10:05:05Z', message: 'Red Teaming pipeline finished successfully.', level: 'info' },
+    { timestamp: '2025-06-15T10:05:06Z', message: 'Model fine-tuning is now pending user approval based on 2 violations.', level: 'warn' }
   ],
   'deepfake-detection': [
-    { timestamp: '2024-06-16T09:45:01Z', message: 'Frame extraction started', level: 'info' },
-    { timestamp: '2024-06-16T09:45:03Z', message: 'Classifier running', level: 'info' }
+    { timestamp: '2025-06-16T09:45:00Z', message: 'Scheduled execution of Deepfake Detection pipeline started.', level: 'info' },
+    { timestamp: '2025-06-16T09:45:01Z', message: 'Frame extraction started for 100 available files.', level: 'info' },
+    { timestamp: '2025-06-16T09:46:00Z', message: 'Processed 10/100 files in frame extraction.', level: 'info' },
+    { timestamp: '2025-06-16T09:48:22Z', message: 'Frame extraction completed. Starting classifier.', level: 'info' },
+    { timestamp: '2025-06-16T09:50:15Z', message: 'Classifier progress: 20/40 batches processed.', level: 'info' },
+    { timestamp: '2025-06-16T09:52:30Z', message: 'Classifier failed: CUDA out of memory. Tried to allocate 3.25 GiB. Check resource allocation.', level: 'error' },
+    { timestamp: '2025-06-16T09:52:31Z', message: 'Pipeline execution has been marked as failed. Reporting step will not be executed.', level: 'error' }
   ]
 };
